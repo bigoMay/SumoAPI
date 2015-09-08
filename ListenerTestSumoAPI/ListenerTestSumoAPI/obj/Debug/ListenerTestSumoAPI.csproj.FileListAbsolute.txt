@@ -7,3 +7,12 @@ g:\data miguelrc\documents\visual studio 2013\Projects\ListenerTestSumoAPI\Liste
 g:\data miguelrc\documents\visual studio 2013\Projects\ListenerTestSumoAPI\ListenerTestSumoAPI\obj\Debug\ListenerTestSumoAPI.csprojResolveAssemblyReference.cache
 g:\data miguelrc\documents\visual studio 2013\Projects\ListenerTestSumoAPI\ListenerTestSumoAPI\obj\Debug\ListenerTestSumoAPI.exe
 g:\data miguelrc\documents\visual studio 2013\Projects\ListenerTestSumoAPI\ListenerTestSumoAPI\obj\Debug\ListenerTestSumoAPI.pdb
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\bin\Debug\ListenerTestSumoAPI.exe.config
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\obj\Debug\ListenerTestSumoAPI.exe
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\obj\Debug\ListenerTestSumoAPI.pdb
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\bin\Debug\ListenerTestSumoAPI.exe
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\bin\Debug\ListenerTestSumoAPI.pdb
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\bin\Debug\SumoCommunicationAPI.dll
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\bin\Debug\SumoCommunicationAPI.pdb
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\bin\Debug\SumoCommunicationAPI.xml
+G:\Data miguelrc\Documents\GitHub\SumoAPI\ListenerTestSumoAPI\ListenerTestSumoAPI\obj\Debug\ListenerTestSumoAPI.csprojResolveAssemblyReference.cache

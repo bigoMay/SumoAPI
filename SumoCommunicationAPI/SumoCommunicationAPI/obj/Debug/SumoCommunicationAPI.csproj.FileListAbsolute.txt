@@ -4,3 +4,9 @@ g:\data miguelrc\documents\visual studio 2013\Projects\SumoCommunicationAPI\Sumo
 g:\data miguelrc\documents\visual studio 2013\Projects\SumoCommunicationAPI\SumoCommunicationAPI\obj\Debug\SumoCommunicationAPI.dll
 g:\data miguelrc\documents\visual studio 2013\Projects\SumoCommunicationAPI\SumoCommunicationAPI\obj\Debug\SumoCommunicationAPI.pdb
 G:\Data miguelrc\Documents\Visual Studio 2013\Projects\SumoCommunicationAPI\SumoCommunicationAPI\bin\Debug\SumoCommunicationAPI.XML
+G:\Data miguelrc\Documents\GitHub\SumoAPI\SumoCommunicationAPI\SumoCommunicationAPI\bin\Debug\SumoCommunicationAPI.XML
+G:\Data miguelrc\Documents\GitHub\SumoAPI\SumoCommunicationAPI\SumoCommunicationAPI\bin\Debug\SumoCommunicationAPI.dll
+G:\Data miguelrc\Documents\GitHub\SumoAPI\SumoCommunicationAPI\SumoCommunicationAPI\bin\Debug\SumoCommunicationAPI.pdb
+G:\Data miguelrc\Documents\GitHub\SumoAPI\SumoCommunicationAPI\SumoCommunicationAPI\obj\Debug\SumoCommunicationAPI.csprojResolveAssemblyReference.cache
+G:\Data miguelrc\Documents\GitHub\SumoAPI\SumoCommunicationAPI\SumoCommunicationAPI\obj\Debug\SumoCommunicationAPI.dll
+G:\Data miguelrc\Documents\GitHub\SumoAPI\SumoCommunicationAPI\SumoCommunicationAPI\obj\Debug\SumoCommunicationAPI.pdb
