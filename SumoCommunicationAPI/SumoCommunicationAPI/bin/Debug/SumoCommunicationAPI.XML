@@ -1,0 +1,606 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SumoCommunicationAPI</name>
+    </assembly>
+    <members>
+        <member name="T:SumoCommunicationAPI.SumoController">
+            <summary>
+            Provides an interface for communication with SUMO/TraCI.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.#ctor(System.String,System.Int32)">
+            <summary>
+            Constructor of the class.
+            </summary>
+            <param name="traciRemoteIp">Ip address where SUMO/TraCI is running.</param>
+            <param name="traciRemotePort">Port where SUMO/TraCI is enabling communication.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.InitializeCommunication">
+            <summary>
+            Starts the communication with the interface SUMO/TraCI.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.RunSingleStep">
+            <summary>
+            Runs a single timestep in SUMO (1000 ms). 
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.RunElapsedTime(System.Int32)">
+            <summary>
+            Run a step of a certain elapsed time in SUMO. 
+            </summary>
+            <param name="elapsedTime">Elapsed time of the simulation step.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.EndSimulation">
+            <summary>
+            Requests SUMO to end the current simulation.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.ChangeVehicleSpeed(System.String,System.Double,System.Int32)">
+            <summary>
+            Requests SUMO to change the speed of a certain vehicle in the current simulation. Doing
+            this, the vehicle will keep the same speed until its car-following behaviour is resumed.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="speed">New speed for the vehicle.</param>
+            <param name="ms">Milliseconds to reach the new speed.</param>
+            <seealso cref="M:SumoCommunicationAPI.SumoController.ResumeVehicleBehaviour(System.String)"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.ResumeVehicleBehaviour(System.String)">
+            <summary>
+            Requests SUMO to resume the car-following behaviour of a certain vehicle in the current
+            simulation.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <seealso cref="M:SumoCommunicationAPI.SumoController.ChangeVehicleSpeed(System.String,System.Double,System.Int32)"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.AddNewVehicle(System.String,System.String,System.String,System.Int32,System.Double,System.Double,System.Byte)">
+            <summary>
+            Requests SUMO to add a new vehicle in the simulation.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="type">String containing the type of the vehicle.</param>
+            <param name="routeId">String containing the route id of the vehicle.</param>
+            <param name="departTime">Specify at which timestep of the simulation the vehicle should depart.</param>
+            <param name="departPosition">Specify the position from which the vehicle should depart.</param>
+            <param name="departSpeed">Specify the initial speed of the vehicle.</param>
+            <param name="departLane">Specify the lane where the vehicle should start.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.AddStopInVehicle(System.String,System.String,System.Double,System.Byte,System.Int32)">
+            <summary>
+            Requests SUMO to add a stop in an existing vehicle of the simulation.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="edgeId">String containing the edge where the vehicle should stop.</param>
+            <param name="position">Position in the edge where the vehicle should stop.</param>
+            <param name="laneIndex">Index of the lane.</param>
+            <param name="durationInMs">Number of milliseconds the vehicle will stop before continuing its trip.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.GetCurrentTimeStep">
+            <summary>
+            Gets the current timestep of the SUMO simulation.
+            </summary>
+            <returns>Return the current timestep or -1 if the simulation is not running.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.LonLatTo2DPosition(System.Double,System.Double)">
+            <summary>
+            Converts a Lon-Lat coordinate to a 2D Position (x,y)
+            </summary>
+            <param name="lon">Longitude to convert</param>
+            <param name="lat">Latitude to convert</param>
+            <returns>Array of doubles containing the conversion (x,y) in positions [0] and [1], respectively.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.OnApplicationQuit">
+            <summary>
+            When application quits, ends SUMO simulation. 
+            </summary>
+        </member>
+        <member name="T:SumoCommunicationAPI.SumoListener">
+            <summary>
+            Listens and processes data from the FCD output of SUMO when the simulation is running.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoListener.#ctor(System.Int32,SumoCommunicationAPI.SumoTrafficDB)">
+            <summary>
+            Constructor of the class. 
+            </summary>
+            <param name="remoteFCDPort">Remote port where SUMO is sending the FCD data.</param>
+            <param name="trafficDB">A SumoTrafficDB instance that is going to be populated with the FCD data.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoListener.StartListening">
+            <summary>
+            Start listening from the FCD output of SUMO.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoListener.StopListening">
+            <summary>
+            Abort the listening from the FCD output of SUMO.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoListener.Listen">
+            <summary>
+            Auxiliar method for threading. 
+            Creates a TCP listener to receive data from the FCD output from SUMO. Reads and parses
+            the XML data containing all the information of the simulation (timesteps and vehicles), 
+            adding it to the <see cref="F:SumoCommunicationAPI.SumoListener.trafficDB"/>.
+            </summary>
+            <seealso cref="T:SumoCommunicationAPI.SumoTrafficDB"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoListener.OnDestroy">
+            <summary>
+            Releases the resources when the object containing the script is being destroyed.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoListener.OnApplicationQuit">
+            <summary>
+            When application quits, aborts the thread for listening. 
+            </summary>
+        </member>
+        <member name="T:SumoCommunicationAPI.SumoTCPCommunication">
+            <summary>
+            Handles the TCP communication with SUMO simulator, including connection and command requests. 
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.#ctor(System.String,System.Int32)">
+            <summary>
+            Constructor of the class.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.StartCommunication">
+            <summary>
+            Starts the TCP connection with SUMO. The server end point is defined by the public
+            fields <see cref="F:SumoCommunicationAPI.SumoTCPCommunication.ip"/> and <see cref="F:SumoCommunicationAPI.SumoTCPCommunication.port"/>.
+            If field <see cref="!:useLocalHost"/> is true, the server end point will be the local host.
+            </summary>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.OnConnect(System.IAsyncResult)"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.OnConnect(System.IAsyncResult)">
+            <summary>
+            Auxiliar method. Handles the asynchronous connection with SUMO. 
+            </summary>
+            <param name="result">Status of the connection.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.RunSingleSimulationStep">
+            <summary>
+            Requests SUMO simulator to perform a single simulation step.
+            </summary>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.StepSimulation(System.Int32)"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.RunElapsedSimulationTime(System.Int32)">
+            <summary>
+            Requests SUMO simulator to perform a step of a certain elapsed time.
+            </summary>
+            <remarks>Given the time-discrete nature of the simulation, elapsed times 
+            values that do not reach the next timestep of the simulation will be stored 
+            and taken into account in the next call(s) to this method.
+            </remarks>
+            <param name="elapsedTime">Elapsed time of the simulation step.</param>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.StepSimulation(System.Int32)"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetCurrentTimeStep">
+            <summary>
+            Gets the current timestep of the SUMO simulation.
+            </summary>
+            <returns>Return the current timestep or -1 if the simulation is not running.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ChangeVehicleSpeed(System.String,System.Double,System.Int32)">
+            <summary>
+            Requests SUMO to change the speed of a certain vehicle in the current simulation. Doing
+            this, the vehicle will keep the same speed until its car-following behaviour is resumed.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="speed">New speed for the vehicle.</param>
+            <param name="ms">Milliseconds to reach the new speed.</param>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.ResumeVehicleBehaviour(System.String)"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ResumeVehicleBehaviour(System.String)">
+            <summary>
+            Requests SUMO to resume the car-following behaviour of a certain vehicle in the current
+            simulation.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.EndSimulation">
+            <summary>
+            Requests SUMO simulator to end the simulation. 
+            </summary>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.CloseSimulation"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.AddNewVehicle(System.String,System.String,System.String,System.Int32,System.Double,System.Double,System.Byte)">
+            <summary>
+            Adds a new vehicle in the simulation.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="type">String containing the type of the vehicle.</param>
+            <param name="routeId">String containing the route id of the vehicle.</param>
+            <param name="departTime">Specify at which timestep of the simulation the vehicle should depart.</param>
+            <param name="departPosition">Specify the position from which the vehicle should depart.</param>
+            <param name="departSpeed">Specify the initial speed of the vehicle.</param>
+            <param name="departLane">Specify the lane where the vehicle should start.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.AddStopInVehicle(System.String,System.String,System.Double,System.Byte,System.Int32)">
+            <summary>
+            Adds a new stop in the vehicle. 
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="edgeId">String containing the edge where the vehicle should stop.</param>
+            <param name="position">Position in the edge where the vehicle should stop.</param>
+            <param name="laneIndex">Index of the lane.</param>
+            <param name="durationInMs">Number of milliseconds the vehicle will stop before continuing its trip.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.LonLatTo2DPosition(System.Double,System.Double)">
+            <summary>
+            Converts a Lon-Lat coordinate to a 2D Position (x,y)
+            </summary>
+            <param name="lon">Longitude to convert</param>
+            <param name="lat">Latitude to convert</param>
+            <returns>Array of doubles containing the conversion (x,y) in positions [0] and [1], respectively.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.CloseSimulation">
+            <summary>
+            Auxiliar private method. Sends the command <i>end_simulation</i> to SUMO simulator
+            through the TCP connection. 
+            </summary>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.StepSimulation(System.Int32)">
+            <summary>
+            Auxiliar private method. Sends the command <i>simulation_step</i> to SUMO simulator
+            through the TCP connection. 
+            </summary>
+            <param name="targetTime">
+            Number of milliseconds to be simulated (1 timestep = 1000 ms). 
+            If 0, request a single timestep.
+            </param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.AccelerateVehicle(System.String,System.Double,System.Int32)">
+            <summary>
+            Auxiliar private method. Sends the command <i>change_vehicle_state(slow_down)</i> 
+            to SUMO simulator through the TCP connection. 
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="speed">New speed for the vehicle.</param>
+            <param name="ms">Milliseconds to reach the new speed.</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+            <remarks>This method can be used to smoothly accelerate and decelerate vehicles.</remarks>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ChangeVehicleSpeed(System.String,System.Double)">
+            <summary>
+            Auxiliar private method. Sends the command <i>change_vehicle_state(speed)</i> 
+            to SUMO simulator through the TCP connection.  
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="speed">New speed for the vehicle.</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+            <remarks>This method will change inmmediately the speed of the vehicle, and will
+            keep it constant until a new value is given. The vehicle will resume its normal 
+            behaviour if -1 is given in the field <see cref="!:speed"/>.</remarks>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.StopVehicle(System.String,System.String,System.Double,System.Byte,System.Int32)">
+            <summary>
+            Auxiliar private method. Sends the command <i>change_vehicle_state(stop)</i> 
+            to SUMO simulator through the TCP connection.  
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="edgeId">String containing the edge where the vehicle should stop.</param>
+            <param name="position">Position in the edge where the vehicle should stop.</param>
+            <param name="laneIndex">Index of the lane.</param>
+            <param name="durationInMs">Number of milliseconds the vehicle will stop before continuing its trip.</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ChangeAllowanceInLane(System.String,System.String[],System.Boolean)">
+            <summary>
+            Auxiliar private method. Sends the command <i>change_lane_state(allowed vehicle 
+            classes)</i> to SUMO simulator through the TCP connection. 
+            </summary>
+            <param name="laneId">Id of the lane.</param>
+            <param name="allowedClasses">String list with the allowed vehicle classes.</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.AddVehicle(System.String,System.String,System.String,System.Int32,System.Double,System.Double,System.Byte)">
+            <summary>
+            Auxiliar private method. Sends the command <i>change_vehicle_state(add)</i> 
+            to SUMO simulator through the TCP connection.  
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="type">String containing the type of the vehicle.</param>
+            <param name="routeId">String containing the route id of the vehicle.</param>
+            <param name="departTime">Specify at which timestep of the simulation the vehicle should depart.</param>
+            <param name="departPosition">Specify the position from which the vehicle should depart.</param>
+            <param name="departSpeed">Specify the initial speed of the vehicle.</param>
+            <param name="departLane">Specify the lane where the vehicle should start.</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.BlockEdge(System.String,System.Boolean)">
+            <summary>
+            Auxiliar private method. Sends the command <i>change_egde_state(change travel/effort)</i> 
+            to SUMO simulator through the TCP connection. It always send a high value in order to
+            block the edge.  
+            </summary>
+            <param name="edgeId">Id of the edge to block.</param>
+            <param name="usingTravelTime">If true, it will block the edge increasing its travel time, 
+            otherwise it will block it increasing the global effort.</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ChangeVehTypeState(System.String,System.String,System.String,System.Double)">
+            <summary>
+            Auxiliar private method. Sends the command <i>change_vehicle_type_state(subcommand)</i> 
+            to SUMO simulator through the TCP connection.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="subcommand">Subcommand to be requested in SUMO.</param>
+            <param name="stringValue">String value (several meanings depending on the subcommand).</param>
+            <param name="doubleValue">Double value (several meanings depending on the subcommand).</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ConvertLonLatTo2DPosition(System.Double,System.Double)">
+            <summary>
+            Auxiliar private method. Sends the command <i>position_conversion</i> 
+            to SUMO simulator through the TCP connection.
+            </summary>
+            <param name="lon">Longitude to convert.</param>
+            <param name="lat">Latitude to convert.</param>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])">
+            <summary>
+            Auxiliar private method. Sends a TCP packet to SUMO.
+            </summary>
+            <param name="tcpPacket">Array of bytes with the TCP packet to be sent.</param>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.WrapSumoTCPPacket(System.Byte,System.Byte[])"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.WrapSumoTCPPacket(System.Byte,System.Byte[])">
+            <summary>
+            Auxiliar private method. Creates a TCP packet ready to be sent to SUMO simulator.
+            </summary>
+            <param name="cmd_id">Id of the command to be sent.</param>
+            <param name="cmd_content">Information to be sent.</param>
+            <returns>Array of bytes with the TCP packet ready to be sent to SUMO.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetResponse">
+            <summary>
+            Private auxiliar method. Gets the response from SUMO after sending a packet.
+            </summary>
+            <returns>Array of bytes with the response from SUMO.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ReadPositionFromResponse(System.Byte[])">
+            <summary>
+            Private auxiliar method. Read a position inside a response given by SUMO for the command 0xab.
+            </summary>
+            <param name="resp">Array of bytes with the response to be read.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.readIntFromBuffer(System.Byte[],System.Int32)">
+            <summary>
+            Auxiliar private method. Reads an integer contained in an array of bytes. 
+            </summary>
+            <param name="buffer">Array of bytes.</param>
+            <param name="index">Position in the array where the integer starts.</param>
+            <returns>Integer read from the buffer.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.OnTimeStepEvent">
+            <summary>
+            Auxiliar private method. Performs additional operations in the script after running 
+            a timestep in the simulation.
+            </summary>
+            <remarks>This method is mainly used to control the speed of the vehicles that are
+            breaking or accelerating.</remarks>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.numberOfBytesInStringArray(System.String[])">
+            <summary>
+            Auxiliar private method. Calculates the number of bytes in an array of strings.
+            </summary>
+            <param name="allowedClasses">Array of strings.</param>
+            <returns>Total number of bytes in the array of strings.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.OnDestroy">
+            <summary>
+            Destroy method for the client stream
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetVersion">
+            <summary>
+            Get the current version of SUMO
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.NotImplementedCommand">
+            <summary>
+            Request SUMO a not implemented command (only for debugging purposes)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.PrintResponse(System.Byte[])">
+            <summary>
+            Print a response sent by SUMO
+            </summary>
+            <param name="resp"></param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.PrintStatusResponse(System.Byte[],System.Int32)">
+            <summary>
+            Print a status response sent by SUMO (Aux. function of PrintResponse)
+            </summary>
+            <param name="resp"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.PrintVersion(System.Byte[],System.Int32)">
+            <summary>
+            Print the version message sent by SUMO (Aux. function of PrintResponse)
+            </summary>
+            <param name="resp"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SumoCommunicationAPI.Tuple`2">
+            <summary>
+            Class that defines a Tuple (needed for Unity).
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+        </member>
+        <member name="M:SumoCommunicationAPI.Tuple`2.#ctor(`0,`1)">
+            <summary>
+            Constructor of the class.
+            </summary>
+            <param name="item1">Value of field item1.</param>
+            <param name="item2">Value of field item2.</param>
+        </member>
+        <member name="P:SumoCommunicationAPI.Tuple`2.Item1">
+            <summary>
+            Get field item1.
+            </summary>
+        </member>
+        <member name="P:SumoCommunicationAPI.Tuple`2.Item2">
+            <summary>
+            Get field item2.
+            </summary>
+        </member>
+        <member name="T:SumoCommunicationAPI.VehicleTDB">
+            <summary>
+            Class that defines a vehicle in the Sumo Traffic DB. 
+            </summary>
+            <seealso cref="T:SumoCommunicationAPI.SumoTrafficDB"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.VehicleTDB.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Constructor of the class.
+            </summary>
+            <param name="id">Id of the vehicle.</param>
+            <param name="lat">Latitude position.</param>
+            <param name="lon">Longitude position.</param>
+            <param name="type">Type of the vehicle.</param>
+            <param name="angle">Angle of the vehicle</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.VehicleTDB.ToString">
+            <summary>
+            Prints the information of the vehicle. 
+            </summary>
+            <returns>String with the information.</returns>
+        </member>
+        <member name="P:SumoCommunicationAPI.VehicleTDB.id">
+            <summary>
+            Vehicle id.
+            </summary>
+        </member>
+        <member name="P:SumoCommunicationAPI.VehicleTDB.latitude">
+            <summary>
+            Latitude position of the vehicle.
+            </summary>
+        </member>
+        <member name="P:SumoCommunicationAPI.VehicleTDB.longitude">
+            <summary>
+            Longitude position of the vehicle.
+            </summary>
+        </member>
+        <member name="P:SumoCommunicationAPI.VehicleTDB.type">
+            <summary>
+            Type of the vehicle in SUMO.
+            </summary>
+        </member>
+        <member name="P:SumoCommunicationAPI.VehicleTDB.angle">
+            <summary>
+            Angle of the vehicle.
+            </summary>
+        </member>
+        <member name="T:SumoCommunicationAPI.TimeStepTDB">
+            <summary>
+            Class that defines a timestep in the Sumo Traffic DB.
+            A timestep is defined by a time and the list of vehicles of that time. 
+            </summary>
+            <seealso cref="T:SumoCommunicationAPI.SumoTrafficDB"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.TimeStepTDB.#ctor(System.Single,System.Int32)">
+            <summary>
+            Constructor of the class.
+            </summary>
+            <param name="time">Time of the simulation.</param>
+            <param name="index">Index position in the Sumo Traffic DB.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.TimeStepTDB.AddVehicle(SumoCommunicationAPI.VehicleTDB)">
+            <summary>
+            Adds a vehicle to this timestep.
+            </summary>
+            <param name="v">VehicleTDB object to add.</param>
+            <seealso cref="T:SumoCommunicationAPI.VehicleTDB"/>
+        </member>
+        <member name="P:SumoCommunicationAPI.TimeStepTDB.vehicles">
+            <summary>
+            List of vehicles that populate a certain timestep in the DB.
+            </summary>
+        </member>
+        <member name="T:SumoCommunicationAPI.SumoTrafficDB">
+            <summary>
+            Implements the traffic DB generated from SUMO. 
+            The traffic DB is composed of a list of <see cref="T:SumoCommunicationAPI.TimeStepTDB"/>, each of them containing
+            a list of <see cref="T:SumoCommunicationAPI.VehicleTDB"/>.
+            </summary>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTrafficDB.#ctor">
+            <summary>
+            Constructor of the class.
+            </summary>
+            <remarks> 
+            The field <see cref="P:SumoCommunicationAPI.SumoTrafficDB.currentTimeStepIndex"/> is set to -1 by default 
+            for functionality purposes related to <see cref="!:SumoTrafficSpawner"/>.
+            </remarks>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTrafficDB.InsertNewTimeStep(System.Single)">
+            <summary>
+            Creates a new timestep to the DB. 
+            </summary>
+            <param name="time">Time of the simulation.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTrafficDB.InsertVehicle(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Inserts a new vehicle in the current timestep of the DB.
+            </summary>
+            <param name="id">Id of the vehicle.</param>
+            <param name="lon">Longitude position.</param>
+            <param name="lat">Latitude position.</param>
+            <param name="type">Type of the vehicle.</param>
+            <param name="angle">Angle of the vehicle.</param>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTrafficDB.GetNumberOfTimeSteps">
+            <summary>
+            Gets the total number of timesteps in the DB.
+            </summary>
+            <returns>Integer with the number of timesteps in the DB.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTrafficDB.GetNumberOfVehiclesInTimeStep(System.Int32)">
+            <summary>
+            Gets the total number of vehicles in a certain timestep of the DB.
+            </summary>
+            <param name="index">Index of the timestep.</param>
+            <returns>
+            Returns an integer with the number of vehicles in the timestep requested,
+            or -1 if there are no vehicles in that timestep.
+            </returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTrafficDB.GetVehicleAt(System.Int32,System.Int32)">
+            <summary>
+            Gets a <see cref="T:SumoCommunicationAPI.VehicleTDB"/> from the DB given the timestep and the vehicle indices.
+            </summary>
+            <param name="timeStepIndex">Index of the timestep.</param>
+            <param name="vehicleIndex">Index of the vehicle.</param>
+            <returns>Returns the vehicle requested or null if there is no vehicle in that position of the DB.</returns>
+        </member>
+        <member name="P:SumoCommunicationAPI.SumoTrafficDB.timeStep">
+            <summary>
+            List of timesteps that populate the DB.
+            </summary>
+        </member>
+    </members>
+</doc>
