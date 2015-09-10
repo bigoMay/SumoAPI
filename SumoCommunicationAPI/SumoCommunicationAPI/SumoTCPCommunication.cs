@@ -264,8 +264,23 @@ namespace SumoCommunicationAPI
             {
                 byte[] resp = ConvertLonLatTo2DPosition(lon, lat);
                 return ReadPositionFromResponse(resp);
+            }
 
-                //TODO parse the result and return the conversion
+            return dummy;
+        }
+
+        /// <summary>
+        /// Requests all the edge ids existing in the simulation.
+        /// </summary>
+        /// <returns>List of strings with all the edge ids.</returns>
+        internal string[] GetEdgeList()
+        {
+            string[] dummy = { "void" };
+
+            if (simulationStarted)
+            {
+                byte[] resp = GetAllEdges();
+                return ReadEdgesFromResponse(resp);
             }
 
             return dummy;
@@ -794,6 +809,22 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
+        /// Auxiliar private method. Sends the command <i>get_edge_variable(0x00)</i> 
+        /// to SUMO simulator through the TCP connection.
+        /// </summary>
+        /// <returns>Array of bytes with the response from SUMO.</returns>
+        /// <seealso cref="SendTCPPacketToSumo"/>
+        private byte[] GetAllEdges()
+        {
+            byte cmd_id = 0xaa;
+            byte variable = 0x00;
+            byte[] cmd_content = {variable, 0x00, 0x00, 0x00, 0x00};
+
+            SendTCPPacketToSumo(WrapSumoTCPPacket(cmd_id, cmd_content));
+            return GetResponse();
+        }
+
+        /// <summary>
         /// Auxiliar private method. Sends a TCP packet to SUMO.
         /// </summary>
         /// <param name="tcpPacket">Array of bytes with the TCP packet to be sent.</param>
@@ -884,7 +915,7 @@ namespace SumoCommunicationAPI
                 //Read the length of the description
                 byte[] stringHeader = new byte[4];
                 sumoClientStream.Read(stringHeader, 0, 4);
-                int descrLength = readIntFromBuffer(stringHeader, 0);
+                int descrLength = ReadIntFromBuffer(stringHeader, 0);
 
                 //Read the description
                 byte[] responseDescription = new byte[descrLength];
@@ -912,11 +943,11 @@ namespace SumoCommunicationAPI
         /// Private auxiliar method. Read a position inside a response given by SUMO for the command 0xab.
         /// </summary>
         /// <param name="resp">Array of bytes with the response to be read.</param>
-        /// <returns></returns>
+        /// <returns>List of doubles with the position.</returns>
         private double[] ReadPositionFromResponse(byte[] resp)
         {
             byte command, result, responseCommand, variable, positionType;
-            int stringLength;
+            int messageLength,  stringLength;
             double[] position = {};
 
             try
@@ -924,11 +955,16 @@ namespace SumoCommunicationAPI
                 int respIndex = 0;
 
                 //Read the length of the TCP message
-                readIntFromBuffer(resp, respIndex);
+                ReadIntFromBuffer(resp, respIndex);
                 respIndex += 4;
 
                 //Skip the length of the basic respond
-                respIndex++;
+                messageLength = resp[respIndex++];
+                if (messageLength == 0)
+                {
+                    messageLength = ReadIntFromBuffer(resp, respIndex);
+                    respIndex += 4;
+                }
 
                 //Read the command
                 command = resp[respIndex++];
@@ -940,11 +976,16 @@ namespace SumoCommunicationAPI
                 if (result == 0x00)
                 {
                     //Skip description
-                    stringLength = readIntFromBuffer(resp, respIndex);
+                    stringLength = ReadIntFromBuffer(resp, respIndex);
                     respIndex += 4 + stringLength;
 
                     //Skip the length of the position response
-                    respIndex++;
+                    messageLength = resp[respIndex++];
+                    if (messageLength == 0)
+                    {
+                        messageLength = ReadIntFromBuffer(resp, respIndex);
+                        respIndex += 4;
+                    }
 
                     //Read the response command
                     responseCommand = resp[respIndex++];
@@ -953,7 +994,7 @@ namespace SumoCommunicationAPI
                     variable = resp[respIndex++];
 
                     //Skip the id string
-                    stringLength = readIntFromBuffer(resp, respIndex);
+                    stringLength = ReadIntFromBuffer(resp, respIndex);
                     respIndex += 4 + stringLength;
 
                     //Read the type of the position
@@ -963,9 +1004,9 @@ namespace SumoCommunicationAPI
                     if (positionType == 0x01)
                     {
                         position = new double[2];
-                        position[0] = readDoubleFromBuffer(resp, respIndex);
+                        position[0] = ReadDoubleFromBuffer(resp, respIndex);
                         respIndex += 8;
-                        position[1] = readDoubleFromBuffer(resp, respIndex);
+                        position[1] = ReadDoubleFromBuffer(resp, respIndex);
                     }
                 }
             }
@@ -978,7 +1019,111 @@ namespace SumoCommunicationAPI
             return position;
         }
 
-        private double readDoubleFromBuffer(byte[] buffer, int index)
+        /// <summary>
+        /// Private auxiliar method. Read the edge ids inside a response given by SUMO for the command 0xaa.
+        /// </summary>
+        /// <param name="resp">Array of bytes with the response to be read.</param>
+        /// <returns>List of strings with the edge ids.</returns>
+        private string[] ReadEdgesFromResponse(byte[] resp)
+        {
+            byte command, result, responseCommand, variable, responseType;
+            int packageLength, messageLength, stringLength, listLength, respIndex = 0;
+            string[] edgeIds = { };
+
+            try
+            {
+                //Read the length of the TCP message
+                packageLength = ReadIntFromBuffer(resp, respIndex);
+                respIndex += 4;
+
+                //Skip the length of the basic response
+                messageLength = resp[respIndex++];
+                if (messageLength == 0)
+                {
+                    messageLength = ReadIntFromBuffer(resp, respIndex);
+                    respIndex += 4;
+                }
+
+                //Read the command
+                command = resp[respIndex++];
+
+                //Read the result
+                result = resp[respIndex++];
+
+                //Continue if result is success
+                if (result == 0x00)
+                {
+                    //Skip description
+                    stringLength = ReadIntFromBuffer(resp, respIndex);
+                    respIndex += 4 + stringLength;
+
+                    //Skip the length of the response
+                    messageLength = resp[respIndex++];
+                    if (messageLength == 0)
+                    {
+                        messageLength = ReadIntFromBuffer(resp, respIndex);
+                        respIndex += 4;
+                    }
+
+                    //Read the response command
+                    responseCommand = resp[respIndex++];
+
+                    //Read the variable
+                    variable = resp[respIndex++];
+
+                    //Skip the id string
+                    stringLength = ReadIntFromBuffer(resp, respIndex);
+                    respIndex += 4 + stringLength;
+
+                    //Read the type of the position
+                    responseType = resp[respIndex++];
+
+                    //Read the position according to the type
+                    if (responseType == 0x0E)
+                    {
+                        //Read the length of the string list
+                        listLength = ReadIntFromBuffer(resp, respIndex);
+                        respIndex += 4;
+
+                        //If the length is longer than the package, get the next package
+                        byte[] extraPackage = GetResponse();
+
+                        //Set the length of the string list
+                        edgeIds = new string[listLength];
+
+                        for (int i = 0; i < listLength; i++)
+                        {
+                            //Read the length of the string list
+                            stringLength = ReadIntFromBuffer(resp, respIndex);
+                            respIndex += 4;
+
+                            //Read the string
+                            edgeIds[i] = encoder.GetString(resp, respIndex, stringLength);
+
+                            //Move the index
+                            respIndex += stringLength;
+                        }
+
+                        return edgeIds;
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error reading edge ids from response\n");
+                return edgeIds;
+            }
+
+            return edgeIds;
+        }
+
+        /// <summary>
+        /// Auxiliar private method. Reads a double contained in an array of bytes. 
+        /// </summary>
+        /// <param name="buffer">Array of bytes.</param>
+        /// <param name="index">Position in the array where the double starts.</param>
+        /// <returns>Double read from the buffer.</returns>
+        private double ReadDoubleFromBuffer(byte[] buffer, int index)
         {
             try
             {
@@ -1001,7 +1146,7 @@ namespace SumoCommunicationAPI
         /// <param name="buffer">Array of bytes.</param>
         /// <param name="index">Position in the array where the integer starts.</param>
         /// <returns>Integer read from the buffer.</returns>
-        private int readIntFromBuffer(byte[] buffer, int index)
+        private int ReadIntFromBuffer(byte[] buffer, int index)
         {
             try
             {
@@ -1117,7 +1262,7 @@ namespace SumoCommunicationAPI
                 int respIndex = 0;
 
                 //Read the length of the TCP message
-                readIntFromBuffer(resp, respIndex);
+                ReadIntFromBuffer(resp, respIndex);
                 respIndex += 4;
 
                 //Print status response
@@ -1150,7 +1295,7 @@ namespace SumoCommunicationAPI
                 int messageLength = resp[index++];
                 if (messageLength == 0)
                 {
-                    messageLength = readIntFromBuffer(resp, index);
+                    messageLength = ReadIntFromBuffer(resp, index);
                     index += 4;
                 }
 
@@ -1163,7 +1308,7 @@ namespace SumoCommunicationAPI
                 Console.WriteLine("\nResult: " + result.ToString() + "\n");
 
                 //Print the description
-                int descrLength = readIntFromBuffer(resp, index);
+                int descrLength = ReadIntFromBuffer(resp, index);
                 index += 4;
                 //UnityEngine.Debug.Log("Description: " + encoder.GetString(resp, index, descrLength) + "\n");
                 Console.WriteLine("Description: " + encoder.GetString(resp, index, descrLength) + "\n");
@@ -1191,7 +1336,7 @@ namespace SumoCommunicationAPI
                 int messageLength = resp[index++];
                 if (messageLength == 0)
                 {
-                    messageLength = readIntFromBuffer(resp, index);
+                    messageLength = ReadIntFromBuffer(resp, index);
                     index += 4;
                 }
 
@@ -1199,12 +1344,12 @@ namespace SumoCommunicationAPI
                 index++;
 
                 //Print the API version
-                int apiVersion = readIntFromBuffer(resp, index);
+                int apiVersion = ReadIntFromBuffer(resp, index);
                 index += 4;
                 Console.WriteLine("API version: " + apiVersion.ToString() + "\n");
 
                 //Print the software version
-                int descrLength = readIntFromBuffer(resp, index);
+                int descrLength = ReadIntFromBuffer(resp, index);
                 index += 4;
                 Console.WriteLine("Software version: " + encoder.GetString(resp, index, descrLength) + "\n");
 

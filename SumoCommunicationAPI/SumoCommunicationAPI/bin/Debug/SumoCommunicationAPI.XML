@@ -91,6 +91,12 @@
             <param name="lat">Latitude to convert</param>
             <returns>Array of doubles containing the conversion (x,y) in positions [0] and [1], respectively.</returns>
         </member>
+        <member name="M:SumoCommunicationAPI.SumoController.GetEdgeList">
+            <summary>
+            Requests all the edge ids existing in the simulation.
+            </summary>
+            <returns>List of strings with all the edge ids.</returns>
+        </member>
         <member name="M:SumoCommunicationAPI.SumoController.OnApplicationQuit">
             <summary>
             When application quits, ends SUMO simulation. 
@@ -237,6 +243,12 @@
             <param name="lat">Latitude to convert</param>
             <returns>Array of doubles containing the conversion (x,y) in positions [0] and [1], respectively.</returns>
         </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetEdgeList">
+            <summary>
+            Requests all the edge ids existing in the simulation.
+            </summary>
+            <returns>List of strings with all the edge ids.</returns>
+        </member>
         <member name="M:SumoCommunicationAPI.SumoTCPCommunication.CloseSimulation">
             <summary>
             Auxiliar private method. Sends the command <i>end_simulation</i> to SUMO simulator
@@ -354,6 +366,14 @@
             <returns>Array of bytes with the response from SUMO.</returns>
             <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
         </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetAllEdges">
+            <summary>
+            Auxiliar private method. Sends the command <i>get_edge_variable(0x00)</i> 
+            to SUMO simulator through the TCP connection.
+            </summary>
+            <returns>Array of bytes with the response from SUMO.</returns>
+            <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
+        </member>
         <member name="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])">
             <summary>
             Auxiliar private method. Sends a TCP packet to SUMO.
@@ -380,9 +400,24 @@
             Private auxiliar method. Read a position inside a response given by SUMO for the command 0xab.
             </summary>
             <param name="resp">Array of bytes with the response to be read.</param>
-            <returns></returns>
+            <returns>List of doubles with the position.</returns>
         </member>
-        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.readIntFromBuffer(System.Byte[],System.Int32)">
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ReadEdgesFromResponse(System.Byte[])">
+            <summary>
+            Private auxiliar method. Read the edge ids inside a response given by SUMO for the command 0xaa.
+            </summary>
+            <param name="resp">Array of bytes with the response to be read.</param>
+            <returns>List of strings with the edge ids.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ReadDoubleFromBuffer(System.Byte[],System.Int32)">
+            <summary>
+            Auxiliar private method. Reads a double contained in an array of bytes. 
+            </summary>
+            <param name="buffer">Array of bytes.</param>
+            <param name="index">Position in the array where the double starts.</param>
+            <returns>Double read from the buffer.</returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ReadIntFromBuffer(System.Byte[],System.Int32)">
             <summary>
             Auxiliar private method. Reads an integer contained in an array of bytes. 
             </summary>

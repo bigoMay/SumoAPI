@@ -34,6 +34,7 @@ namespace ClientTestSumoAPI
                     "\n F1: change vehicle speed" +
                     "\n F2: resume vehicle" +
                     "\n F3: convert lon-lat coordinates" +
+                    "\n F4: get all the edge ids" +
                     "\n");
 
             //Create a new sumo controller to get communication with the SUMO/TraCI interface of the simulation.
@@ -97,6 +98,17 @@ namespace ClientTestSumoAPI
                     double lat = double.Parse(Console.ReadLine());
                     double[] resp = mySumoController.LonLatTo2DPosition(lon, lat);
                     Console.WriteLine(" Conversion -> X:" + resp[0] + " Y:" + resp[1]);
+                }
+
+                //F4: Get edge ids
+                else if (key.Key == ConsoleKey.F4)
+                {
+                    string[] resp = mySumoController.GetEdgeList();
+                    Console.WriteLine(" Edge ids: ");
+                    for (int i=0; i < resp.Length; i++)
+                    {
+                        Console.Write(resp[i] + ", ");
+                    }
                 }
             }
         }

@@ -213,6 +213,15 @@ namespace SumoCommunicationAPI
             return tcpComScript.LonLatTo2DPosition(lon, lat);
         }
 
+        /// <summary>
+        /// Requests all the edge ids existing in the simulation.
+        /// </summary>
+        /// <returns>List of strings with all the edge ids.</returns>
+        public string[] GetEdgeList()
+        {
+            return tcpComScript.GetEdgeList();
+        }
+
         ///// <summary>
         ///// Auxiliar method for threading. 
         ///// Runs an infinite loop of simulation timesteps in SUMO. 
