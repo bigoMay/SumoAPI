@@ -157,7 +157,6 @@
             <summary>
             Starts the TCP connection with SUMO. The server end point is defined by the public
             fields <see cref="F:SumoCommunicationAPI.SumoTCPCommunication.ip"/> and <see cref="F:SumoCommunicationAPI.SumoTCPCommunication.port"/>.
-            If field <see cref="!:useLocalHost"/> is true, the server end point will be the local host.
             </summary>
             <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.OnConnect(System.IAsyncResult)"/>
         </member>

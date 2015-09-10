@@ -49,7 +49,6 @@ namespace SumoCommunicationAPI
         /// <summary>
         /// Starts the TCP connection with SUMO. The server end point is defined by the public
         /// fields <see cref="SumoTCPCommunication.ip"/> and <see cref="SumoTCPCommunication.port"/>.
-        /// If field <see cref="useLocalHost"/> is true, the server end point will be the local host.
         /// </summary>
         /// <seealso cref="OnConnect"/>
         internal void StartCommunication()
@@ -910,16 +909,25 @@ namespace SumoCommunicationAPI
         /// <returns>Array of bytes with the response from SUMO.</returns>
         private byte[] GetResponse()
         {
+            int bytesRead = 0;
+
             try
             {
                 //Read the length of the description
                 byte[] stringHeader = new byte[4];
                 sumoClientStream.Read(stringHeader, 0, 4);
-                int descrLength = ReadIntFromBuffer(stringHeader, 0);
+                //Array.Reverse(stringHeader, 0, 4);
+                int descrLength = ReadIntFromBuffer(stringHeader, 0) - 4;
 
-                //Read the description
+                //Read the package(s) that form the description
                 byte[] responseDescription = new byte[descrLength];
-                int bytesRead = sumoClientStream.Read(responseDescription, 0, descrLength);
+                while (bytesRead < descrLength)
+                {
+                    if (sumoClientStream.DataAvailable)
+                    {
+                        bytesRead += sumoClientStream.Read(responseDescription, bytesRead, descrLength - bytesRead);
+                    }
+                }
 
                 //Console.WriteLine(bytesRead);
 
@@ -1027,13 +1035,13 @@ namespace SumoCommunicationAPI
         private string[] ReadEdgesFromResponse(byte[] resp)
         {
             byte command, result, responseCommand, variable, responseType;
-            int packageLength, messageLength, stringLength, listLength, respIndex = 0;
+            int messageLength, stringLength, listLength, respIndex = 0;
             string[] edgeIds = { };
 
             try
             {
-                //Read the length of the TCP message
-                packageLength = ReadIntFromBuffer(resp, respIndex);
+                //Skip the length of the TCP message
+                ReadIntFromBuffer(resp, respIndex);
                 respIndex += 4;
 
                 //Skip the length of the basic response
@@ -1084,9 +1092,6 @@ namespace SumoCommunicationAPI
                         //Read the length of the string list
                         listLength = ReadIntFromBuffer(resp, respIndex);
                         respIndex += 4;
-
-                        //If the length is longer than the package, get the next package
-                        byte[] extraPackage = GetResponse();
 
                         //Set the length of the string list
                         edgeIds = new string[listLength];

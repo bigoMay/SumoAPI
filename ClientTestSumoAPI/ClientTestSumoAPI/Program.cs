@@ -109,6 +109,7 @@ namespace ClientTestSumoAPI
                     {
                         Console.Write(resp[i] + ", ");
                     }
+                    Console.WriteLine(" \n All edges listed \n");
                 }
             }
         }
