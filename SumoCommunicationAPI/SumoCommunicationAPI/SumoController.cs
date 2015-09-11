@@ -222,6 +222,56 @@ namespace SumoCommunicationAPI
             return tcpComScript.GetEdgeList();
         }
 
+        /// <summary>
+        /// Requests the length of a vehicle. 
+        /// </summary>
+        /// <param name="vehType">String containing the type of the vehicle.</param>
+        /// <returns></returns>
+        public double GetVehicleTypeLength(string vehType)
+        {
+            return tcpComScript.GetVehicleTypeLength(vehType);
+        }
+
+        /// <summary>
+        /// Requests the width of a vehicle. 
+        /// </summary>
+        /// <param name="vehType">String containing the type of the vehicle.</param>
+        /// <returns></returns>
+        public double GetVehicleTypeWidth(string vehType)
+        {
+            return tcpComScript.GetVehicleTypeWidth(vehType);
+        }
+
+        /// <summary>
+        /// Requests the maximum acceleration of a vehicle. 
+        /// </summary>
+        /// <param name="vehType">String containing the type of the vehicle.</param>
+        /// <returns></returns>
+        public double GetVehicleTypeMaxAccel(string vehType)
+        {
+            return tcpComScript.GetVehicleTypeMaxAccel(vehType);
+        }
+
+        /// <summary>
+        /// Requests the maximum speed of a vehicle. 
+        /// </summary>
+        /// <param name="vehType">String containing the type of the vehicle.</param>
+        /// <returns></returns>
+        public double GetVehicleTypeMaxSpeed(string vehType)
+        {
+            return tcpComScript.GetVehicleTypeMaxSpeed(vehType);
+        }
+
+        /// <summary>
+        /// Requests the maxixum deceleration of a vehicle. 
+        /// </summary>
+        /// <param name="vehType">String containing the type of the vehicle.</param>
+        /// <returns></returns>
+        public double GetVehicleTypeMaxDecel(string vehType)
+        {
+            return tcpComScript.GetVehicleTypeMaxDecel(vehType);
+        }
+
         ///// <summary>
         ///// Auxiliar method for threading. 
         ///// Runs an infinite loop of simulation timesteps in SUMO. 
