@@ -187,7 +187,7 @@ namespace SumoCommunicationAPI
         {
             if (simulationStarted)
             {
-                byte[] resp = ChangeVehicleSpeed(vehId, -1.0d);
+                byte[] resp = ChangeVehicleSpeed(vehId, -1.0d, false);
 
                 if (velocities.ContainsKey(vehId))
                 {
@@ -404,7 +404,7 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <param name="routeId">String with the route id.</param>
         /// <returns></returns>
-        public string[] GetEdgesInRoute(string routeId)
+        internal string[] GetEdgesInRoute(string routeId)
         {
             string[] dummy = { "void" };
 
@@ -415,6 +415,16 @@ namespace SumoCommunicationAPI
             }
 
             return dummy;
+        }
+
+        /// <summary>
+        /// Requests SUMO to change the max speed of a certain vehicle in the current simulation.
+        /// </summary>
+        /// <param name="vehId">String containing the vehicle id.</param>
+        /// <param name="maxSpeed">New max speed for the vehicle.</param>
+        internal void ChangeVehicleMaxSpeed(string vehId, double maxSpeed)
+        {
+            ChangeVehicleSpeed(vehId, maxSpeed, true);
         }
 
         /// <summary>
@@ -515,7 +525,7 @@ namespace SumoCommunicationAPI
         /// <remarks>This method will change inmmediately the speed of the vehicle, and will
         /// keep it constant until a new value is given. The vehicle will resume its normal 
         /// behaviour if -1 is given in the field <see cref="speed"/>.</remarks>
-        private byte[] ChangeVehicleSpeed(string vehId, double speed)
+        private byte[] ChangeVehicleSpeed(string vehId, double speed, bool isMaxSpeed)
         {
             byte cmd_id = 0xc4;
             byte[] cmd_content = { };
@@ -523,7 +533,10 @@ namespace SumoCommunicationAPI
             cmd_content = new byte[5 + vehId.Length + 9];
 
             //Put subcommand in content
-            cmd_content[0] = 0x40;
+            if (isMaxSpeed)
+                cmd_content[0] = 0x41;
+            else
+                cmd_content[0] = 0x40;
 
             //Put vehicle id in content
             byte[] bvehIdLength = BitConverter.GetBytes(vehId.Length);
@@ -1569,7 +1582,7 @@ namespace SumoCommunicationAPI
             //Change the constant speed of the vehicles that have been collected
             foreach (String s in keys)
             {
-                byte[] resp1 = ChangeVehicleSpeed(s, velocities[s].Item2);
+                byte[] resp1 = ChangeVehicleSpeed(s, velocities[s].Item2, false);
                 velocities.Remove(s);
             }
         }

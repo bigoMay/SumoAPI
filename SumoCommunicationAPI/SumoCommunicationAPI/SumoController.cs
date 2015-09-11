@@ -146,6 +146,19 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
+        /// Requests SUMO to change the max speed of a certain vehicle in the current simulation.
+        /// </summary>
+        /// <param name="vehId">String containing the vehicle id.</param>
+        /// <param name="maxSpeed">New max speed for the vehicle.</param>
+        public void ChangeVehicleMaxSpeed(string vehId, double maxSpeed)
+        {
+            if (isSimulationStarted && !isPause)
+            {
+                tcpComScript.ChangeVehicleMaxSpeed(vehId, maxSpeed);
+            }
+        }
+
+        /// <summary>
         /// Requests SUMO to resume the car-following behaviour of a certain vehicle in the current
         /// simulation.
         /// </summary>
