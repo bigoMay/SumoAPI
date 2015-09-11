@@ -223,7 +223,7 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
-        /// Requests the length of a vehicle. 
+        /// Requests the length of a vehicle type. 
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
@@ -233,7 +233,7 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
-        /// Requests the width of a vehicle. 
+        /// Requests the width of a vehicle type. 
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
@@ -243,7 +243,7 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
-        /// Requests the maximum acceleration of a vehicle. 
+        /// Requests the maximum acceleration of a vehicle type. 
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
@@ -253,7 +253,7 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
-        /// Requests the maximum speed of a vehicle. 
+        /// Requests the maximum speed of a vehicle type. 
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
@@ -263,7 +263,7 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
-        /// Requests the maxixum deceleration of a vehicle. 
+        /// Requests the maxixum deceleration of a vehicle type. 
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
@@ -272,6 +272,36 @@ namespace SumoCommunicationAPI
             return tcpComScript.GetVehicleTypeMaxDecel(vehType);
         }
 
+        /// <summary>
+        /// Requests the route id of a certain vehicle. 
+        /// </summary>
+        /// <param name="vehId">String with the vehicle id.</param>
+        /// <returns></returns>
+        public string GetVehicleRouteId(string vehId)
+        {
+            return tcpComScript.GetVehicleRouteId(vehId);
+        }
+
+        /// <summary>
+        /// Requests the lane index of a certain vehicle.
+        /// </summary>
+        /// <param name="vehId">String with the vehicle id.</param>
+        /// <returns></returns>
+        public int GetVehicleLaneIndex(string vehId)
+        {
+            return tcpComScript.GetVehicleLaneIndex(vehId);
+        }
+
+        /// <summary>
+        /// Requests the edge of a certain route. 
+        /// </summary>
+        /// <param name="routeId">String with the route id.</param>
+        /// <returns></returns>
+        public string[] GetEdgesInRoute(string routeId)
+        {
+            return tcpComScript.GetEdgesInRoute(routeId);
+        }
+         
         ///// <summary>
         ///// Auxiliar method for threading. 
         ///// Runs an infinite loop of simulation timesteps in SUMO. 

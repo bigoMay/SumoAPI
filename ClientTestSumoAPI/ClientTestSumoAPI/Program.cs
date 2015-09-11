@@ -36,6 +36,7 @@ namespace ClientTestSumoAPI
                     "\n F3: convert lon-lat coordinates" +
                     "\n F4: get all the edge ids" +
                     "\n F5: Get vehicle type properties" +
+                    "\n F6: Get vehicle route information" + 
                     "\n");
 
             //Create a new sumo controller to get communication with the SUMO/TraCI interface of the simulation.
@@ -128,6 +129,27 @@ namespace ClientTestSumoAPI
                     Console.WriteLine("\n Properties of " + vehType + ":\n" + 
                         " Length: " + length + "  Width: " + width + "  Max Accel: " + maxAccel + 
                             "  Max Decel: " + maxDecel + "  Max Speed: " + maxSpeed + "\n");
+                }
+
+                //F6: Get the vehicle route information
+                else if (key.Key == ConsoleKey.F6)
+                {
+                    Console.WriteLine(" Vehicle id: ");
+                    string vehId = Console.ReadLine();
+
+                    string routeId = mySumoController.GetVehicleRouteId(vehId);
+                    int laneIndex = mySumoController.GetVehicleLaneIndex(vehId);
+                    string[] edgeList = mySumoController.GetEdgesInRoute(routeId);
+
+                    Console.WriteLine("\n Route information of " + vehId + ":\n" +
+                        " Route Id: " + routeId + "  Lane Index: " + laneIndex + "\n");
+
+                    Console.WriteLine(" Edge ids: ");
+                    for (int i = 0; i < edgeList.Length; i++)
+                    {
+                        Console.Write(edgeList[i] + ", ");
+                    }
+                    Console.WriteLine(" \n All edges listed \n");
                 }
             }
         }

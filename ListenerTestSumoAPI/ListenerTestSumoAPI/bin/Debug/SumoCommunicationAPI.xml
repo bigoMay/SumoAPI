@@ -99,37 +99,58 @@
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeLength(System.String)">
             <summary>
-            Requests the length of a vehicle. 
+            Requests the length of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
             <returns></returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeWidth(System.String)">
             <summary>
-            Requests the width of a vehicle. 
+            Requests the width of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
             <returns></returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeMaxAccel(System.String)">
             <summary>
-            Requests the maximum acceleration of a vehicle. 
+            Requests the maximum acceleration of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
             <returns></returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeMaxSpeed(System.String)">
             <summary>
-            Requests the maximum speed of a vehicle. 
+            Requests the maximum speed of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
             <returns></returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeMaxDecel(System.String)">
             <summary>
-            Requests the maxixum deceleration of a vehicle. 
+            Requests the maxixum deceleration of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.GetVehicleRouteId(System.String)">
+            <summary>
+            Requests the route id of a certain vehicle. 
+            </summary>
+            <param name="vehId">String with the vehicle id.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.GetVehicleLaneIndex(System.String)">
+            <summary>
+            Requests the lane index of a certain vehicle.
+            </summary>
+            <param name="vehId">String with the vehicle id.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.GetEdgesInRoute(System.String)">
+            <summary>
+            Requests the edge of a certain route. 
+            </summary>
+            <param name="routeId">String with the route id.</param>
             <returns></returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.OnApplicationQuit">
@@ -318,6 +339,27 @@
             <param name="vehType">String containing the type of the vehicle.</param>
             <returns></returns>
         </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetVehicleRouteId(System.String)">
+            <summary>
+            Requests the route id of a certain vehicle. 
+            </summary>
+            <param name="vehId">String with the vehicle id.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetVehicleLaneIndex(System.String)">
+            <summary>
+            Requests the lane index of a certain vehicle.
+            </summary>
+            <param name="vehId">String with the vehicle id.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetEdgesInRoute(System.String)">
+            <summary>
+            Requests the edge of a certain route. 
+            </summary>
+            <param name="routeId">String with the route id.</param>
+            <returns></returns>
+        </member>
         <member name="M:SumoCommunicationAPI.SumoTCPCommunication.CloseSimulation">
             <summary>
             Auxiliar private method. Sends the command <i>end_simulation</i> to SUMO simulator
@@ -443,12 +485,30 @@
             <returns>Array of bytes with the response from SUMO.</returns>
             <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
         </member>
-        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetVehicleProperty(System.String,System.Byte)">
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetVehicleTypeProperty(System.String,System.Byte)">
             <summary>
             Auxiliar private mehod. Sends the command  <i>get_vehicle_type_property</i> to SUMO simulator
             through the TCP connection. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
+            <param name="variable">Variable that determines the property to request.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetVehicleVariable(System.String,System.Byte)">
+            <summary>
+            Auxiliar private method .Sends the command  <i>get_vehicle_variable</i> to SUMO simulator
+            through the TCP connection. 
+            </summary>
+            <param name="vehId">String containing the id of the vehicle.</param>
+            <param name="variable">Variable that determines the property to request.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.GetRouteVariable(System.String,System.Byte)">
+            <summary>
+            Auxiliar private method .Sends the command  <i>get_route_variable</i> to SUMO simulator
+            through the TCP connection. 
+            </summary>
+            <param name="vehId">String containing the id of the route.</param>
             <param name="variable">Variable that determines the property to request.</param>
             <returns></returns>
         </member>
@@ -482,7 +542,7 @@
         </member>
         <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ReadEdgesFromResponse(System.Byte[])">
             <summary>
-            Private auxiliar method. Read the edge ids inside a response given by SUMO for the command 0xaa.
+            Private auxiliar method. Read the edge ids inside a response given by SUMO for the command 0xaa and 0xa4.
             </summary>
             <param name="resp">Array of bytes with the response to be read.</param>
             <returns>List of strings with the edge ids.</returns>
@@ -493,6 +553,13 @@
             </summary>
             <param name="resp">Array of bytes with the response.</param>
             <returns></returns>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ReadVehicleVariableFromResponse(System.Byte[])">
+            <summary>
+            Auxiliar private method. Read the vehicle variable from the response given by SUMO for the command 0xa4.
+            </summary>
+            <param name="resp">Array of bytes with the response.</param>
+            <returns>String with the response (caller method must parse if the response type is not a string).</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ReadDoubleFromBuffer(System.Byte[],System.Int32)">
             <summary>

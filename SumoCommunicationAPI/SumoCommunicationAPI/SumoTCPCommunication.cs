@@ -294,7 +294,7 @@ namespace SumoCommunicationAPI
         {
             if (simulationStarted)
             {
-                byte[] resp = GetVehicleProperty(vehType, 0x44); //0x44: length
+                byte[] resp = GetVehicleTypeProperty(vehType, 0x44); //0x44: length
                 return ReadVehicleTypePropertyFromResponse(resp);
             }
 
@@ -306,11 +306,11 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
-        public double GetVehicleTypeWidth(string vehType)
+        internal double GetVehicleTypeWidth(string vehType)
         {
             if (simulationStarted)
             {
-                byte[] resp = GetVehicleProperty(vehType, 0x4d); //0x4d: width
+                byte[] resp = GetVehicleTypeProperty(vehType, 0x4d); //0x4d: width
                 return ReadVehicleTypePropertyFromResponse(resp);
             }
 
@@ -322,11 +322,11 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
-        public double GetVehicleTypeMaxAccel(string vehType)
+        internal double GetVehicleTypeMaxAccel(string vehType)
         {
             if (simulationStarted)
             {
-                byte[] resp = GetVehicleProperty(vehType, 0x46); //0x46: max accel
+                byte[] resp = GetVehicleTypeProperty(vehType, 0x46); //0x46: max accel
                 return ReadVehicleTypePropertyFromResponse(resp);
             }
 
@@ -338,11 +338,11 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
-        public double GetVehicleTypeMaxSpeed(string vehType)
+        internal double GetVehicleTypeMaxSpeed(string vehType)
         {
             if (simulationStarted)
             {
-                byte[] resp = GetVehicleProperty(vehType, 0x41); //0x41: max speed
+                byte[] resp = GetVehicleTypeProperty(vehType, 0x41); //0x41: max speed
                 return ReadVehicleTypePropertyFromResponse(resp);
             }
 
@@ -354,15 +354,67 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <returns></returns>
-        public double GetVehicleTypeMaxDecel(string vehType)
+        internal double GetVehicleTypeMaxDecel(string vehType)
         {
             if (simulationStarted)
             {
-                byte[] resp = GetVehicleProperty(vehType, 0x47); //0x47: max decel
+                byte[] resp = GetVehicleTypeProperty(vehType, 0x47); //0x47: max decel
                 return ReadVehicleTypePropertyFromResponse(resp);
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Requests the route id of a certain vehicle. 
+        /// </summary>
+        /// <param name="vehId">String with the vehicle id.</param>
+        /// <returns></returns>
+        internal string GetVehicleRouteId(string vehId)
+        {
+            string dummy = "empty";
+
+            if (simulationStarted)
+            {
+                byte[] resp = GetVehicleVariable(vehId, 0x53); //0x53: route id
+                return ReadVehicleVariableFromResponse(resp);
+            }
+
+            return dummy;
+        }
+
+        /// <summary>
+        /// Requests the lane index of a certain vehicle.
+        /// </summary>
+        /// <param name="vehId">String with the vehicle id.</param>
+        /// <returns></returns>
+        internal int GetVehicleLaneIndex(string vehId)
+        {
+            if (simulationStarted)
+            {
+                byte[] resp = GetVehicleVariable(vehId, 0x52); //0x52: lane index
+                return int.Parse(ReadVehicleVariableFromResponse(resp));
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Requests the edge of a certain route. 
+        /// </summary>
+        /// <param name="routeId">String with the route id.</param>
+        /// <returns></returns>
+        public string[] GetEdgesInRoute(string routeId)
+        {
+            string[] dummy = { "void" };
+
+            if (simulationStarted)
+            {
+                byte[] resp = GetRouteVariable(routeId, 0x54); //0x54: edge list
+                return ReadEdgesFromResponse(resp);
+            }
+
+            return dummy;
         }
 
         /// <summary>
@@ -910,7 +962,7 @@ namespace SumoCommunicationAPI
         /// <param name="vehType">String containing the type of the vehicle.</param>
         /// <param name="variable">Variable that determines the property to request.</param>
         /// <returns></returns>
-        private byte[] GetVehicleProperty(string vehType, byte variable)
+        private byte[] GetVehicleTypeProperty(string vehType, byte variable)
         {
             byte cmd_id = 0xa5;
             byte[] cmd_content = new byte[5 + vehType.Length];
@@ -927,6 +979,64 @@ namespace SumoCommunicationAPI
 
             Buffer.BlockCopy(bvehTypeLength, 0, cmd_content, 1, 4);
             Buffer.BlockCopy(bvehType, 0, cmd_content, 5, vehType.Length);
+
+            SendTCPPacketToSumo(WrapSumoTCPPacket(cmd_id, cmd_content));
+            return GetResponse();
+        }
+
+        /// <summary>
+        /// Auxiliar private method .Sends the command  <i>get_vehicle_variable</i> to SUMO simulator
+        /// through the TCP connection. 
+        /// </summary>
+        /// <param name="vehId">String containing the id of the vehicle.</param>
+        /// <param name="variable">Variable that determines the property to request.</param>
+        /// <returns></returns>
+        private byte[] GetVehicleVariable(string vehId, byte variable)
+        {
+            byte cmd_id = 0xa4;
+            byte[] cmd_content = new byte[5 + vehId.Length];
+
+            //Put the variable
+            cmd_content[0] = variable;
+
+            //Put vehicle type in content
+            byte[] bvehIdLength = BitConverter.GetBytes(vehId.Length);
+            byte[] bvehId = encoder.GetBytes(vehId);
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bvehIdLength, 0, bvehIdLength.Length);
+
+            Buffer.BlockCopy(bvehIdLength, 0, cmd_content, 1, 4);
+            Buffer.BlockCopy(bvehId, 0, cmd_content, 5, vehId.Length);
+
+            SendTCPPacketToSumo(WrapSumoTCPPacket(cmd_id, cmd_content));
+            return GetResponse();
+        }
+
+        /// <summary>
+        /// Auxiliar private method .Sends the command  <i>get_route_variable</i> to SUMO simulator
+        /// through the TCP connection. 
+        /// </summary>
+        /// <param name="vehId">String containing the id of the route.</param>
+        /// <param name="variable">Variable that determines the property to request.</param>
+        /// <returns></returns>
+        private byte[] GetRouteVariable(string routeId, byte variable)
+        {
+            byte cmd_id = 0xa6;
+            byte[] cmd_content = new byte[5 + routeId.Length];
+
+            //Put the variable
+            cmd_content[0] = variable;
+
+            //Put vehicle type in content
+            byte[] brouteIdLength = BitConverter.GetBytes(routeId.Length);
+            byte[] brouteId = encoder.GetBytes(routeId);
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(brouteIdLength, 0, brouteIdLength.Length);
+
+            Buffer.BlockCopy(brouteIdLength, 0, cmd_content, 1, 4);
+            Buffer.BlockCopy(brouteId, 0, cmd_content, 5, routeId.Length);
 
             SendTCPPacketToSumo(WrapSumoTCPPacket(cmd_id, cmd_content));
             return GetResponse();
@@ -1137,7 +1247,7 @@ namespace SumoCommunicationAPI
         }
 
         /// <summary>
-        /// Private auxiliar method. Read the edge ids inside a response given by SUMO for the command 0xaa.
+        /// Private auxiliar method. Read the edge ids inside a response given by SUMO for the command 0xaa and 0xa4.
         /// </summary>
         /// <param name="resp">Array of bytes with the response to be read.</param>
         /// <returns>List of strings with the edge ids.</returns>
@@ -1303,6 +1413,89 @@ namespace SumoCommunicationAPI
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Auxiliar private method. Read the vehicle variable from the response given by SUMO for the command 0xa4.
+        /// </summary>
+        /// <param name="resp">Array of bytes with the response.</param>
+        /// <returns>String with the response (caller method must parse if the response type is not a string).</returns>
+        private string ReadVehicleVariableFromResponse(byte[] resp)
+        {
+            byte command, result, responseCommand, variable, responseType;
+            int messageLength, stringLength, respIndex = 0;
+            string response = "<empty>";
+
+            try
+            {
+                //Skip the length of the TCP message
+                ReadIntFromBuffer(resp, respIndex);
+                respIndex += 4;
+
+                //Skip the length of the basic response
+                messageLength = resp[respIndex++];
+                if (messageLength == 0)
+                {
+                    messageLength = ReadIntFromBuffer(resp, respIndex);
+                    respIndex += 4;
+                }
+
+                //Read the command
+                command = resp[respIndex++];
+
+                //Read the result
+                result = resp[respIndex++];
+
+                //Continue if result is success
+                if (result == 0x00)
+                {
+                    //Skip description
+                    stringLength = ReadIntFromBuffer(resp, respIndex);
+                    respIndex += 4 + stringLength;
+
+                    //Skip the length of the response
+                    messageLength = resp[respIndex++];
+                    if (messageLength == 0)
+                    {
+                        messageLength = ReadIntFromBuffer(resp, respIndex);
+                        respIndex += 4;
+                    }
+
+                    //Read the response command
+                    responseCommand = resp[respIndex++];
+
+                    //Read the variable
+                    variable = resp[respIndex++];
+
+                    //Skip the id string
+                    stringLength = ReadIntFromBuffer(resp, respIndex);
+                    respIndex += 4 + stringLength;
+
+                    //Read the type of the position
+                    responseType = resp[respIndex++];
+
+                    //Read the position according to the type
+                    if (responseType == 0x0C)
+                    { 
+                        //String type
+                        stringLength = ReadIntFromBuffer(resp, respIndex);
+                        respIndex += 4;
+                        return encoder.GetString(resp, respIndex, stringLength);
+                    }
+                    else if (responseType == 0x09)
+                    { 
+                        //Int type
+                        return ReadIntFromBuffer(resp, respIndex).ToString();
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error reading vehicle variable from response\n");
+                return response;
+            }
+
+            return response;
         }
 
         /// <summary>
