@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="SumoWCFService.SumoService" CodeBehind="SumoService.svc.cs" %>

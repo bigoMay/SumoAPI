@@ -134,7 +134,7 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <remarks> 
         /// The field <see cref="SumoTrafficDB.currentTimeStepIndex"/> is set to -1 by default 
-        /// for functionality purposes related to <see cref="SumoTrafficSpawner"/>.
+        /// for functionality purposes.
         /// </remarks>
         public SumoTrafficDB()
         {

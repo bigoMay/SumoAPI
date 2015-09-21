@@ -427,6 +427,18 @@ namespace SumoCommunicationAPI
             ChangeVehicleSpeed(vehId, maxSpeed, true);
         }
 
+
+
+        //-------------------------------------------------------------------------------------//
+        //                                                                                     //
+        //                                                                                     //
+        //                              AUXILIAR PRIVATE METHODS                               // 
+        //                                                                                     //
+        //                                                                                     //
+        //-------------------------------------------------------------------------------------//
+
+
+
         /// <summary>
         /// Auxiliar private method. Sends the command <i>end_simulation</i> to SUMO simulator
         /// through the TCP connection. 
@@ -520,11 +532,12 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <param name="vehId">String containing the vehicle id.</param>
         /// <param name="speed">New speed for the vehicle.</param>
+        /// <param name="isMaxSpeed">Boolean that indicates if the speed to change is the max speed.</param>
         /// <returns>Array of bytes with the response from SUMO.</returns>
         /// <seealso cref="SendTCPPacketToSumo"/>
         /// <remarks>This method will change inmmediately the speed of the vehicle, and will
         /// keep it constant until a new value is given. The vehicle will resume its normal 
-        /// behaviour if -1 is given in the field <see cref="speed"/>.</remarks>
+        /// behaviour if -1 is given in the field speed.</remarks>
         private byte[] ChangeVehicleSpeed(string vehId, double speed, bool isMaxSpeed)
         {
             byte cmd_id = 0xc4;
@@ -639,6 +652,7 @@ namespace SumoCommunicationAPI
         /// </summary>
         /// <param name="laneId">Id of the lane.</param>
         /// <param name="allowedClasses">String list with the allowed vehicle classes.</param>
+        /// <param name="allow">Boolean that indicates if the vehicle classes will be allow to use the lane.</param>
         /// <returns>Array of bytes with the response from SUMO.</returns>
         /// <seealso cref="SendTCPPacketToSumo"/>
         private byte[] ChangeAllowanceInLane(string laneId, string[] allowedClasses, bool allow)
@@ -1030,7 +1044,7 @@ namespace SumoCommunicationAPI
         /// Auxiliar private method .Sends the command  <i>get_route_variable</i> to SUMO simulator
         /// through the TCP connection. 
         /// </summary>
-        /// <param name="vehId">String containing the id of the route.</param>
+        /// <param name="routeId">String containing the id of the route.</param>
         /// <param name="variable">Variable that determines the property to request.</param>
         /// <returns></returns>
         private byte[] GetRouteVariable(string routeId, byte variable)
@@ -1607,7 +1621,7 @@ namespace SumoCommunicationAPI
         /// <summary>
         /// Destroy method for the client stream
         /// </summary>
-        internal void OnDestroy()
+        private void OnDestroy()
         {
             if (sumoClientStream != null)
             {

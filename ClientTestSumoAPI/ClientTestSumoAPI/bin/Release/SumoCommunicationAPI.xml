@@ -41,11 +41,19 @@
             <summary>
             Requests SUMO to change the speed of a certain vehicle in the current simulation. Doing
             this, the vehicle will keep the same speed until its car-following behaviour is resumed.
+            If the speed is 0, the vehicle will stop.
             </summary>
             <param name="vehId">String containing the vehicle id.</param>
             <param name="speed">New speed for the vehicle.</param>
             <param name="ms">Milliseconds to reach the new speed.</param>
             <seealso cref="M:SumoCommunicationAPI.SumoController.ResumeVehicleBehaviour(System.String)"/>
+        </member>
+        <member name="M:SumoCommunicationAPI.SumoController.ChangeVehicleMaxSpeed(System.String,System.Double)">
+            <summary>
+            Requests SUMO to change the max speed of a certain vehicle in the current simulation.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="maxSpeed">New max speed for the vehicle.</param>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.ResumeVehicleBehaviour(System.String)">
             <summary>
@@ -81,7 +89,7 @@
             <summary>
             Gets the current timestep of the SUMO simulation.
             </summary>
-            <returns>Return the current timestep or -1 if the simulation is not running.</returns>
+            <returns>Current timestep or -1 if the simulation is not running.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.LonLatTo2DPosition(System.Double,System.Double)">
             <summary>
@@ -102,56 +110,56 @@
             Requests the length of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
-            <returns></returns>
+            <returns>Length of the vehicle type given.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeWidth(System.String)">
             <summary>
             Requests the width of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
-            <returns></returns>
+            <returns>Width of the vehicle type given.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeMaxAccel(System.String)">
             <summary>
             Requests the maximum acceleration of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
-            <returns></returns>
+            <returns>Maximum acceleration of the vehicle type given.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeMaxSpeed(System.String)">
             <summary>
             Requests the maximum speed of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
-            <returns></returns>
+            <returns>Maximum speed of the vehicle type given.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleTypeMaxDecel(System.String)">
             <summary>
             Requests the maxixum deceleration of a vehicle type. 
             </summary>
             <param name="vehType">String containing the type of the vehicle.</param>
-            <returns></returns>
+            <returns>Maximum deceleration of the vehicle type given.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleRouteId(System.String)">
             <summary>
             Requests the route id of a certain vehicle. 
             </summary>
             <param name="vehId">String with the vehicle id.</param>
-            <returns></returns>
+            <returns>Route id of the vehicle.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetVehicleLaneIndex(System.String)">
             <summary>
             Requests the lane index of a certain vehicle.
             </summary>
             <param name="vehId">String with the vehicle id.</param>
-            <returns></returns>
+            <returns>Lane index where the vehicle stands.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.GetEdgesInRoute(System.String)">
             <summary>
             Requests the edge of a certain route. 
             </summary>
             <param name="routeId">String with the route id.</param>
-            <returns></returns>
+            <returns>List of edges that are part of the route given.</returns>
         </member>
         <member name="M:SumoCommunicationAPI.SumoController.OnApplicationQuit">
             <summary>
@@ -360,6 +368,13 @@
             <param name="routeId">String with the route id.</param>
             <returns></returns>
         </member>
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ChangeVehicleMaxSpeed(System.String,System.Double)">
+            <summary>
+            Requests SUMO to change the max speed of a certain vehicle in the current simulation.
+            </summary>
+            <param name="vehId">String containing the vehicle id.</param>
+            <param name="maxSpeed">New max speed for the vehicle.</param>
+        </member>
         <member name="M:SumoCommunicationAPI.SumoTCPCommunication.CloseSimulation">
             <summary>
             Auxiliar private method. Sends the command <i>end_simulation</i> to SUMO simulator
@@ -392,18 +407,19 @@
             <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
             <remarks>This method can be used to smoothly accelerate and decelerate vehicles.</remarks>
         </member>
-        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ChangeVehicleSpeed(System.String,System.Double)">
+        <member name="M:SumoCommunicationAPI.SumoTCPCommunication.ChangeVehicleSpeed(System.String,System.Double,System.Boolean)">
             <summary>
             Auxiliar private method. Sends the command <i>change_vehicle_state(speed)</i> 
             to SUMO simulator through the TCP connection.  
             </summary>
             <param name="vehId">String containing the vehicle id.</param>
             <param name="speed">New speed for the vehicle.</param>
+            <param name="isMaxSpeed">Boolean that indicates if the speed to change is the max speed.</param>
             <returns>Array of bytes with the response from SUMO.</returns>
             <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
             <remarks>This method will change inmmediately the speed of the vehicle, and will
             keep it constant until a new value is given. The vehicle will resume its normal 
-            behaviour if -1 is given in the field <see cref="!:speed"/>.</remarks>
+            behaviour if -1 is given in the field speed.</remarks>
         </member>
         <member name="M:SumoCommunicationAPI.SumoTCPCommunication.StopVehicle(System.String,System.String,System.Double,System.Byte,System.Int32)">
             <summary>
@@ -425,6 +441,7 @@
             </summary>
             <param name="laneId">Id of the lane.</param>
             <param name="allowedClasses">String list with the allowed vehicle classes.</param>
+            <param name="allow">Boolean that indicates if the vehicle classes will be allow to use the lane.</param>
             <returns>Array of bytes with the response from SUMO.</returns>
             <seealso cref="M:SumoCommunicationAPI.SumoTCPCommunication.SendTCPPacketToSumo(System.Byte[])"/>
         </member>
@@ -508,7 +525,7 @@
             Auxiliar private method .Sends the command  <i>get_route_variable</i> to SUMO simulator
             through the TCP connection. 
             </summary>
-            <param name="vehId">String containing the id of the route.</param>
+            <param name="routeId">String containing the id of the route.</param>
             <param name="variable">Variable that determines the property to request.</param>
             <returns></returns>
         </member>
@@ -741,7 +758,7 @@
             </summary>
             <remarks> 
             The field <see cref="P:SumoCommunicationAPI.SumoTrafficDB.currentTimeStepIndex"/> is set to -1 by default 
-            for functionality purposes related to <see cref="!:SumoTrafficSpawner"/>.
+            for functionality purposes.
             </remarks>
         </member>
         <member name="M:SumoCommunicationAPI.SumoTrafficDB.InsertNewTimeStep(System.Single)">
