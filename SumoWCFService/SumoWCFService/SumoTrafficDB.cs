@@ -10,108 +10,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace SumoCommunicationAPI
+namespace SumoWCFService
 {
-    /// <summary>
-    /// Class that defines a vehicle in the Sumo Traffic DB. 
-    /// </summary>
-    /// <seealso cref="SumoTrafficDB"/>
-    public class VehicleTDB
-    {
-        /// <summary>
-        /// Vehicle id.
-        /// </summary>
-        public string id { get; set; }
-
-        /// <summary>
-        /// Latitude position of the vehicle.
-        /// </summary>
-        public float latitude { get; set; }
-
-        /// <summary>
-        /// Longitude position of the vehicle.
-        /// </summary>
-        public float longitude { get; set; }
-
-        /// <summary>
-        /// Type of the vehicle in SUMO.
-        /// </summary>
-        public string type { get; set; }
-
-        /// <summary>
-        /// Angle of the vehicle.
-        /// </summary>
-        public float angle { get; set; }
-
-        /// <summary>
-        /// Constructor of the class.
-        /// </summary>
-        /// <param name="id">Id of the vehicle.</param>
-        /// <param name="lat">Latitude position.</param>
-        /// <param name="lon">Longitude position.</param>
-        /// <param name="type">Type of the vehicle.</param>
-        /// <param name="angle">Angle of the vehicle</param>
-        internal VehicleTDB(string id, string lat, string lon, string type, string angle)
-        {
-            this.id = id;
-            this.latitude = float.Parse(lat);
-            this.longitude = float.Parse(lon);
-            this.type = type;
-            this.angle = float.Parse(angle);
-        }
-
-        /// <summary>
-        /// Prints the information of the vehicle. 
-        /// </summary>
-        /// <returns>String with the information.</returns>
-        public override string ToString()
-        {
-            return (" Id: " + this.id + "\n" +
-                " Latitude: " + this.latitude + "\n" +
-                " Longitude: " + this.longitude + "\n" +
-                " Type: " + this.type + "\n" +
-                " Angle: " + this.angle + "\n");
-        }
-    }
-
-    /// <summary>
-    /// Class that defines a timestep in the Sumo Traffic DB.
-    /// A timestep is defined by a time and the list of vehicles of that time. 
-    /// </summary>
-    /// <seealso cref="SumoTrafficDB"/>
-    public class TimeStepTDB
-    {
-        /// <summary>
-        /// List of vehicles that populate a certain timestep in the DB.
-        /// </summary>
-        public List<VehicleTDB> vehicles { get; set; }
-        
-        private float time;
-        private int index;
-        
-        /// <summary>
-        /// Constructor of the class.
-        /// </summary>
-        /// <param name="time">Time of the simulation.</param>
-        /// <param name="index">Index position in the Sumo Traffic DB.</param>
-        internal TimeStepTDB(float time, int index)
-        {
-            this.time = time;
-            this.index = index;
-            vehicles = new List<VehicleTDB>();
-        }
-
-        /// <summary>
-        /// Adds a vehicle to this timestep.
-        /// </summary>
-        /// <param name="v">VehicleTDB object to add.</param>
-        /// <seealso cref="VehicleTDB"/>
-        internal void AddVehicle(VehicleTDB v)
-        {
-            vehicles.Add(v);
-        }
-    }
-
     /// <summary>
     /// Implements the traffic DB generated from SUMO. 
     /// The traffic DB is composed of a list of <see cref=" TimeStepTDB"/>, each of them containing
@@ -123,7 +23,7 @@ namespace SumoCommunicationAPI
         /// List of timesteps that populate the DB.
         /// </summary>
         public List<TimeStepTDB> timeStep { get; set; }
-        
+
         private int currentTimeStepIndex { get; set; }
 
         /// <summary>
@@ -177,6 +77,15 @@ namespace SumoCommunicationAPI
         public int GetNumberOfTimeSteps()
         {
             return timeStep.Count;
+        }
+
+        /// <summary>
+        /// Gets the current timestep in which the simulation is running.
+        /// </summary>
+        /// <returns>TimeStepTDB object with the full information of the current timestep.</returns>
+        public TimeStepTDB GetCurrentTimeStep()
+        {
+            return timeStep[currentTimeStepIndex];
         }
 
         /// <summary>
