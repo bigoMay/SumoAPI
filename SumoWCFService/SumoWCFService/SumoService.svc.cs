@@ -13,7 +13,7 @@ namespace SumoWCFService
     {
         private static string traciIp = "127.0.0.1";
         private static int traciPort = 3456;
-        private static  int fcdOutputPort = 3654;
+        private static int fcdOutputPort = 3654;
         private static SumoTraciConnection traciCom;
         private static SumoListener fcdListener;
         private static SumoTrafficDB trafficDB;
@@ -24,7 +24,7 @@ namespace SumoWCFService
         /// from the fcd output.
         /// </summary>
         /// <returns>0 if operation succeeded, -1 otherwise.</returns>
-        public int InitializeSumo()
+        public int InitializeSimulation()
         {
             if (!isSimulationStarted)
             {
@@ -34,8 +34,8 @@ namespace SumoWCFService
 
                 if (traciCom.StartCommunication() == -1)
                     return -1;
-               if (fcdListener.StartListening() == -1)
-                   return -1;
+                if (fcdListener.StartListening() == -1)
+                    return -1;
 
                 isSimulationStarted = true;
 
@@ -60,6 +60,22 @@ namespace SumoWCFService
             }
             else
                 return -1;
+        }
+
+        /// <summary>
+        /// Requests SUMO to restart the current simulation. All the data from the previous simulation will be lost.
+        /// </summary>
+        /// <returns>0 if operation succeeded, -1 otherwise.</returns>
+        public int RestartSimulation()
+        {
+            if (isSimulationStarted)
+            {
+                traciCom.EndSimulation();
+                fcdListener.StopListening();
+                isSimulationStarted = false;
+            }
+
+            return InitializeSimulation();
         }
 
         /// <summary>

@@ -85,7 +85,7 @@ namespace SumoWCFService
 
             //Initialize the timer for handling vehicles speed and set the imperfection to 0
             velocities = new Dictionary<String, Tuple<int, double>>();
-            byte[] resp = ChangeVehTypeState("DEFAULT_VEHTYPE", "imperfection", "", 0.0d);
+            //byte[] resp = ChangeVehTypeState("DEFAULT_VEHTYPE", "imperfection", "", 0.0d);
         }
 
         /// <summary>

@@ -12,10 +12,13 @@ namespace SumoWCFService
     public interface ISumoService
     {
         [OperationContract]
-        int InitializeSumo();
+        int InitializeSimulation(); 
 
         [OperationContract]
         int EndSimulation();
+
+        [OperationContract]
+        int RestartSimulation(); 
 
         [OperationContract]
         TimeStepTDB GetCurrentTimeStep();
@@ -27,7 +30,7 @@ namespace SumoWCFService
         int GetNumberOfTimeSteps();
                 
         [OperationContract]
-        int RunSingleStep();
+        int RunSingleStep(); 
 
         [OperationContract]
         int RunElapsedTime(int elapsedTime);
