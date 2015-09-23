@@ -66,7 +66,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.Write(" Out of range when InsertVehicle");
+                System.Diagnostics.Debug.Write(" Out of range when InsertVehicle");
             }
         }
 
@@ -123,7 +123,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.Write(" Out of range in GetVehicleAt");
+                System.Diagnostics.Debug.Write(" Out of range in GetVehicleAt");
                 return null;
             }
         }

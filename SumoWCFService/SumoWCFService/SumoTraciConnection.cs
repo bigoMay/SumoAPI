@@ -23,12 +23,12 @@ namespace SumoWCFService
         private string ip = "127.0.0.1";
         private int port = 3456;
         private int stepNumber = -1;
-        private TcpClient sumoClient = new TcpClient();
+        private int millisecondsInSumo = -1;
+        private TcpClient sumoClient;
         private ASCIIEncoding encoder = new ASCIIEncoding();
         private IPEndPoint sumoServerEndPoint;
         private NetworkStream sumoClientStream;
         private bool simulationStarted = false;
-        private int millisecondsInSumo = 0;
         private Dictionary<String, Tuple<int, double>> velocities;
         private string traciIp;
         private int traciPort;
@@ -52,14 +52,15 @@ namespace SumoWCFService
             try
             {
                 sumoServerEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
-                //Console.Write("Making a TCP connection to SUMO (TraCI)");
+                //System.Diagnostics.Debug.Write("Making a TCP connection to SUMO (TraCI)");
+                sumoClient = new TcpClient();
                 sumoClient.BeginConnect(ip, port, new AsyncCallback(OnConnect), null);
                 return 0;
             }
             catch (Exception e)
             {
-                Console.Write(" Error trying to connect with SUMO, is the server running?");
-                Console.Write(e);
+                System.Diagnostics.Debug.Write(" Error trying to connect with SUMO, is the server running?");
+                System.Diagnostics.Debug.Write(e);
                 if (sumoClientStream != null)
                     sumoClientStream.Close();
                 sumoClient.Close();
@@ -78,10 +79,11 @@ namespace SumoWCFService
             //Open a socket for communication
             sumoClientStream = sumoClient.GetStream();
 
-            Console.Write(" Connected with SUMO, ready for communication... \n\n");
+            System.Diagnostics.Debug.Write(" Connected with SUMO, ready for communication... \n\n");
 
             simulationStarted = true;
             stepNumber = 0;
+            millisecondsInSumo = 0;
 
             //Initialize the timer for handling vehicles speed and set the imperfection to 0
             velocities = new Dictionary<String, Tuple<int, double>>();
@@ -117,7 +119,7 @@ namespace SumoWCFService
             {
                 millisecondsInSumo += elapsedTime;
 
-                //Console.Write(" millisecondsInSumo:" + millisecondsInSumo + "\n");
+                //System.Diagnostics.Debug.Write(" millisecondsInSumo:" + millisecondsInSumo + "\n");
 
                 // Calculates the number of timesteps that the simulation needs to run 
                 // according to the elapsed time given
@@ -132,7 +134,7 @@ namespace SumoWCFService
                     }
                 }
 
-                //Console.Write(" stepNumber:" + stepNumber + "\n");
+                //System.Diagnostics.Debug.Write(" stepNumber:" + stepNumber + "\n");
 
             }
         }
@@ -201,11 +203,14 @@ namespace SumoWCFService
         {
             if (simulationStarted)
             {
-                Console.WriteLine(" Ending simulation...\n");
+                System.Diagnostics.Debug.WriteLine(" Ending simulation...\n");
                 byte[] resp = CloseSimulation();
-                Console.WriteLine(" End of the simulation\n");
+                System.Diagnostics.Debug.WriteLine(" End of the simulation\n");
+                sumoClientStream.Dispose();
                 sumoClientStream.Close();
                 sumoClient.Close();
+                sumoClientStream = null;
+                sumoClient = null;
                 simulationStarted = false;
             }
         }
@@ -224,7 +229,7 @@ namespace SumoWCFService
         {
             if (simulationStarted)
             {
-                //Console.WriteLine(" Adding vehicle...\n");
+                //System.Diagnostics.Debug.WriteLine(" Adding vehicle...\n");
                 byte[] resp = AddVehicle(vehId, type, routeId, departTime, departPosition, departSpeed, departLane);
             }
         }
@@ -241,7 +246,7 @@ namespace SumoWCFService
         {
             if (simulationStarted)
             {
-                //Console.WriteLine(" Adding stop in vehicle...\n");
+                //System.Diagnostics.Debug.WriteLine(" Adding stop in vehicle...\n");
                 byte[] resp = StopVehicle(vehId, edgeId, position, laneIndex, durationInMs);
             }
         }
@@ -697,7 +702,7 @@ namespace SumoWCFService
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(bclassLength, 0, blaneIdLength.Length);
 
-                Console.WriteLine(currentIndexOf_cmd_content);
+                System.Diagnostics.Debug.WriteLine(currentIndexOf_cmd_content);
 
                 Buffer.BlockCopy(bclassLength, 0, cmd_content, currentIndexOf_cmd_content, 4);
                 Buffer.BlockCopy(bclass, 0, cmd_content, currentIndexOf_cmd_content + 4, bclass.Length);
@@ -888,7 +893,7 @@ namespace SumoWCFService
                     cmd_content[0] = 0x5d;
                     break;
                 default:
-                    Console.WriteLine(" Command not implemented yet in TCPCommunication\n");
+                    System.Diagnostics.Debug.WriteLine(" Command not implemented yet in TCPCommunication\n");
                     return null;
             }
 
@@ -1079,7 +1084,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine(" Error sending the TCP packet to SUMO\n");
+                System.Diagnostics.Debug.WriteLine(" Error sending the TCP packet to SUMO\n");
                 return;
             }
         }
@@ -1141,7 +1146,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine("Error during WrapSumoTCPPacket operation\n");
+                System.Diagnostics.Debug.WriteLine("Error during WrapSumoTCPPacket operation\n");
                 return null;
             }
         }
@@ -1172,20 +1177,20 @@ namespace SumoWCFService
                     }
                 }
 
-                //Console.WriteLine(bytesRead);
+                //System.Diagnostics.Debug.WriteLine(bytesRead);
 
                 //Create the final message
                 byte[] response = new byte[bytesRead + 4];
                 Buffer.BlockCopy(stringHeader, 0, response, 0, stringHeader.Length);
                 Buffer.BlockCopy(responseDescription, 0, response, stringHeader.Length, bytesRead);
 
-                //Console.WriteLine(BitConverter.ToString(response, 0, response.Length));
+                //System.Diagnostics.Debug.WriteLine(BitConverter.ToString(response, 0, response.Length));
 
                 return response;
             }
             catch
             {
-                Console.WriteLine(" Error getting response from SUMO\n");
+                System.Diagnostics.Debug.WriteLine(" Error getting response from SUMO\n");
                 return null;
             }
         }
@@ -1263,7 +1268,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine("Error reading position from response\n");
+                System.Diagnostics.Debug.WriteLine("Error reading position from response\n");
                 return position;
             }
 
@@ -1358,7 +1363,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine("Error reading edge ids from response\n");
+                System.Diagnostics.Debug.WriteLine("Error reading edge ids from response\n");
                 return edgeIds;
             }
 
@@ -1432,7 +1437,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine("Error reading vehicle type property from response\n");
+                System.Diagnostics.Debug.WriteLine("Error reading vehicle type property from response\n");
                 return -1;
             }
 
@@ -1515,7 +1520,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine("Error reading vehicle variable from response\n");
+                System.Diagnostics.Debug.WriteLine("Error reading vehicle variable from response\n");
                 return response;
             }
 
@@ -1540,7 +1545,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine(" Error reading double from buffer\n");
+                System.Diagnostics.Debug.WriteLine(" Error reading double from buffer\n");
                 return -1;
             }
         }
@@ -1563,7 +1568,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine(" Error reading integer from buffer\n");
+                System.Diagnostics.Debug.WriteLine(" Error reading integer from buffer\n");
                 return -1;
             }
         }
@@ -1681,7 +1686,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.WriteLine("Error printing response\n");
+                System.Diagnostics.Debug.WriteLine("Error printing response\n");
                 return;
             }
         }
@@ -1710,19 +1715,19 @@ namespace SumoWCFService
                 //Print the result
                 byte result = resp[index++];
                 //UnityEngine.Debug.Log("\nResult: " + result.ToString() + "\n");
-                Console.WriteLine("\nResult: " + result.ToString() + "\n");
+                System.Diagnostics.Debug.WriteLine("\nResult: " + result.ToString() + "\n");
 
                 //Print the description
                 int descrLength = ReadIntFromBuffer(resp, index);
                 index += 4;
                 //UnityEngine.Debug.Log("Description: " + encoder.GetString(resp, index, descrLength) + "\n");
-                Console.WriteLine("Description: " + encoder.GetString(resp, index, descrLength) + "\n");
+                System.Diagnostics.Debug.WriteLine("Description: " + encoder.GetString(resp, index, descrLength) + "\n");
 
                 return messageLength;
             }
             catch
             {
-                Console.WriteLine("Error printing status response\n");
+                System.Diagnostics.Debug.WriteLine("Error printing status response\n");
                 return -1;
             }
         }
@@ -1751,18 +1756,18 @@ namespace SumoWCFService
                 //Print the API version
                 int apiVersion = ReadIntFromBuffer(resp, index);
                 index += 4;
-                Console.WriteLine("API version: " + apiVersion.ToString() + "\n");
+                System.Diagnostics.Debug.WriteLine("API version: " + apiVersion.ToString() + "\n");
 
                 //Print the software version
                 int descrLength = ReadIntFromBuffer(resp, index);
                 index += 4;
-                Console.WriteLine("Software version: " + encoder.GetString(resp, index, descrLength) + "\n");
+                System.Diagnostics.Debug.WriteLine("Software version: " + encoder.GetString(resp, index, descrLength) + "\n");
 
                 return messageLength;
             }
             catch
             {
-                Console.WriteLine("Error printing version\n");
+                System.Diagnostics.Debug.WriteLine("Error printing version\n");
                 return -1;
             }
         }

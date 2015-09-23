@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using System.Threading;
 
 namespace SumoWCFService
 {
@@ -13,10 +14,11 @@ namespace SumoWCFService
     {
         private static string traciIp = "127.0.0.1";
         private static int traciPort = 3456;
+        private static int safeTimeWindowInMs = 2000; //To assure synchronization
         private static int fcdOutputPort = 3654;
-        private static SumoTraciConnection traciCom;
+        private static SumoTraciConnection traciCom = new SumoTraciConnection("127.0.0.1", 3456);
+        private static SumoTrafficDB trafficDB = new SumoTrafficDB();
         private static SumoListener fcdListener;
-        private static SumoTrafficDB trafficDB;
         private static bool isSimulationStarted = false;
 
         /// <summary>
@@ -28,17 +30,18 @@ namespace SumoWCFService
         {
             if (!isSimulationStarted)
             {
-                traciCom = new SumoTraciConnection(traciIp, traciPort);
                 trafficDB = new SumoTrafficDB();
-                fcdListener = new SumoListener(fcdOutputPort, trafficDB);
 
-                if (traciCom.StartCommunication() == -1)
-                    return -1;
-                if (fcdListener.StartListening() == -1)
-                    return -1;
+                fcdListener = new SumoListener(fcdOutputPort, trafficDB);
+                fcdListener.StartListening();
+
+                traciCom = new SumoTraciConnection("127.0.0.1", 3456);
+                traciCom.StartCommunication();
+
+                //Give time to release the resources
+                Thread.Sleep(safeTimeWindowInMs); 
 
                 isSimulationStarted = true;
-
                 return 0;
             }
             else
@@ -54,8 +57,19 @@ namespace SumoWCFService
             if (isSimulationStarted)
             {
                 traciCom.EndSimulation();
+                traciCom = null;
+
                 fcdListener.StopListening();
+                fcdListener = null;
+                trafficDB = null;
+
+                GC.Collect();
+
+                //Give time to release the resources
+                Thread.Sleep(safeTimeWindowInMs); 
+
                 isSimulationStarted = false;
+
                 return 0;
             }
             else
@@ -70,9 +84,7 @@ namespace SumoWCFService
         {
             if (isSimulationStarted)
             {
-                traciCom.EndSimulation();
-                fcdListener.StopListening();
-                isSimulationStarted = false;
+                EndSimulation();
             }
 
             return InitializeSimulation();

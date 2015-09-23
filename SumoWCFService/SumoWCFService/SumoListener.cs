@@ -49,16 +49,7 @@ namespace SumoWCFService
             thread = new Thread(ts);
             thread.Start();
             return 0;
-            //Console.Write("Thread for listening created\n");
-        }
-
-        /// <summary>
-        /// Abort the listening from the FCD output of SUMO.
-        /// </summary>
-        public void StopListening()
-        {
-            thread.Abort();
-            return;
+            //System.Diagnostics.Debug.Write("Thread for listening created\n");
         }
 
         /// <summary>
@@ -75,10 +66,16 @@ namespace SumoWCFService
             try
             {
                 //Start the listener
-                //Console.Write("Starting FCD Listener...\n");
+                //System.Diagnostics.Debug.Write("Starting FCD Listener...\n");
                 sumoListener = new TcpListener(IPAddress.Any, port);
+
+                //The following line allows reusing the same port for cases in which listener is stopped and 
+                //started inmediately after (case of RestartSimulation in the SumoWCFService):
+                sumoListener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+
                 sumoListener.Start();
-                //Console.Write("Listening in port " + port + "...\n");
+
+                //System.Diagnostics.Debug.Write("Listening in port " + port + "...\n");
 
                 //Open a socket to receive data from SUMO 
                 sumoSocket = sumoListener.AcceptSocket();
@@ -89,7 +86,7 @@ namespace SumoWCFService
             }
             catch
             {
-                Console.Write(" Error trying to listen from SUMO, is the server running?\n");
+                System.Diagnostics.Debug.Write(" Error trying to listen from SUMO, is the server running?\n");
                 return;
             }
 
@@ -132,7 +129,7 @@ namespace SumoWCFService
 
                                 if (reader.Name.Equals("fcd-export"))
                                 {
-                                    Console.Write(" End of the FCD output stream reached\n");
+                                    System.Diagnostics.Debug.Write(" End of the FCD output stream reached\n");
                                     return;
                                 }
                                 break;
@@ -142,42 +139,50 @@ namespace SumoWCFService
             }
             catch (ThreadAbortException)
             {
-                Console.Write(" Thread for listening aborted\n");
+                System.Diagnostics.Debug.Write(" Thread for listening aborted\n");
                 return;
             }
             catch (Exception e)
             {
-                Console.Write(" Error while listening!\n" + e.ToString());
+                System.Diagnostics.Debug.Write(" Error while listening!\n" + e.ToString());
                 return;
+            }
+            finally
+            {
+                StopListening();
             }
         }
 
         /// <summary>
-        /// Releases the resources when the object containing the script is being destroyed.
+        /// Abort the listening from the FCD output of SUMO.
         /// </summary>
-        internal void OnDestroy()
+        public void StopListening()
         {
+            System.Diagnostics.Debug.WriteLine("Stopping the listener! Abort FCD Listener\n");
+
+            if (sumoListener != null)
+            {
+                sumoListener.Server.Close(0);
+                sumoListener.Stop();
+                sumoListener = null;
+            }
             if (streamSocket != null)
             {
-                streamSocket.Close();
                 streamSocket.Dispose();
+                streamSocket.Close();
+                streamSocket = null;
             }
             if (sumoSocket != null)
             {
+                sumoSocket.Dispose();
                 sumoSocket.Close();
+                sumoSocket = null;
             }
             if (thread != null)
             {
                 thread.Abort();
             }
-        }
 
-        /// <summary>
-        /// When application quits, aborts the thread for listening. 
-        /// </summary>
-        internal void OnApplicationQuit()
-        {
-            Console.Write(" Application quitting! Abort FCD Listener\n");
             thread.Abort();
             return;
         }
