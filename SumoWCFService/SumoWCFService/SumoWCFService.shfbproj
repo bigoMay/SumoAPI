@@ -18,11 +18,21 @@
     <HtmlHelpName>Documentation</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="bin\SumoWCFService.dll" xmlns="" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="bin\SumoWCFService.dll" />
+<DocumentationSource sourceFile="bin\SumoWCFService.XML" /></DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="SumoWCFService" isDocumented="True" xmlns="">API for communication with the traffic simulator SUMO through a WCF service. The services included in this solution facilitate the request of commands to the interface SUMO/TraCI from multiple clients, as well as the gathering of traffic data from the output of the simulation.</NamespaceSummaryItem>
     </NamespaceSummaries>
+    <ApiFilter>
+      <Filter entryType="Namespace" fullName="SumoWCFService" isExposed="False" xmlns="">
+  <Filter entryType="Class" fullName="SumoWCFService.SumoService" filterName="SumoService" isExposed="True" />
+  <Filter entryType="Class" fullName="SumoWCFService.TimeStepTDB" filterName="TimeStepTDB" isExposed="True" />
+  <Filter entryType="Class" fullName="SumoWCFService.VehicleTDB" filterName="VehicleTDB" isExposed="True" />
+</Filter>
+<Filter entryType="Namespace" fullName="System" isExposed="True" xmlns="">
+  <Filter entryType="Class" fullName="System.Object" filterName="Object" isExposed="False" />
+</Filter></ApiFilter>
+    <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected</VisibleItems>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

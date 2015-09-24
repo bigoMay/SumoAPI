@@ -9,6 +9,9 @@ using System.Threading;
 
 namespace SumoWCFService
 {
+    /// <summary>
+    /// Provides an interface for multi-client communication with SUMO/TraCI through a WCF service.
+    /// </summary>
     [ServiceBehavior(AddressFilterMode = AddressFilterMode.Any)]
     public class SumoService : ISumoService
     {
@@ -20,7 +23,7 @@ namespace SumoWCFService
         private static SumoTrafficDB trafficDB = new SumoTrafficDB();
         private static SumoListener fcdListener;
         private static bool isSimulationStarted = false;
-
+        
         /// <summary>
         /// Starts the communication with the interface SUMO/TraCI and starts listening 
         /// from the fcd output.

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/SumoWCFService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/SumoWCFService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="TimeStepTDB">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="vehicles" nillable="true" type="tns:ArrayOfVehicleTDB" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TimeStepTDB" nillable="true" type="tns:TimeStepTDB" />
+  <xs:complexType name="ArrayOfVehicleTDB">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="VehicleTDB" nillable="true" type="tns:VehicleTDB" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfVehicleTDB" nillable="true" type="tns:ArrayOfVehicleTDB" />
+  <xs:complexType name="VehicleTDB">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="angle" type="xs:float" />
+      <xs:element minOccurs="0" name="id" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="latitude" type="xs:float" />
+      <xs:element minOccurs="0" name="longitude" type="xs:float" />
+      <xs:element minOccurs="0" name="type" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VehicleTDB" nillable="true" type="tns:VehicleTDB" />
+</xs:schema>
