@@ -45,7 +45,7 @@ namespace SumoWCFService
         /// <param name="time">Time of the simulation.</param>
         internal void InsertNewTimeStep(float time)
         {
-            timeStep.Add(new TimeStepTDB(time, currentTimeStepIndex));
+            timeStep.Add(new TimeStepTDB(time, currentTimeStepIndex+1));
             this.currentTimeStepIndex++;
         }
 
@@ -83,9 +83,17 @@ namespace SumoWCFService
         /// Gets the current timestep in which the simulation is running.
         /// </summary>
         /// <returns>TimeStepTDB object with the full information of the current timestep.</returns>
-        public TimeStepTDB GetCurrentTimeStep()
+        public TimeStepTDB GetLastTimeStep()
         {
-            return timeStep[currentTimeStepIndex];
+            try
+            {
+                return timeStep[currentTimeStepIndex];
+            }
+            catch
+            {
+                //No timestep
+                return null;
+            }
         }
 
         /// <summary>

@@ -21,7 +21,13 @@ namespace SumoWCFService
         int RestartSimulation(); 
 
         [OperationContract]
-        TimeStepTDB GetCurrentTimeStep();
+        int RunSingleStep(); 
+
+        [OperationContract]
+        int RunElapsedTime(int elapsedTime);
+
+        [OperationContract]
+        TimeStepTDB GetLastTimeStep();
 
         [OperationContract]
         TimeStepTDB GetTimeStep(int index);
@@ -29,27 +35,6 @@ namespace SumoWCFService
         [OperationContract]
         int GetNumberOfTimeSteps();
                 
-        [OperationContract]
-        int RunSingleStep(); 
-
-        [OperationContract]
-        int RunElapsedTime(int elapsedTime);
-
-        [OperationContract]
-        int ChangeVehicleSpeed(string vehId, double speed, int ms);
-
-        [OperationContract]
-        int ChangeVehicleMaxSpeed(string vehId, double maxSpeed);
-
-        [OperationContract]
-        int ResumeVehicleBehaviour(string vehId);
-
-        [OperationContract]
-        int AddNewVehicle(string vehId, string type, string routeId, int departTime, double departPosition, double departSpeed, byte departLane);
-
-        [OperationContract]
-        int AddStopInVehicle(string vehId, string edgeId, double position, byte laneIndex, int durationInMs);
-
         [OperationContract]
         double[] LonLatTo2DPosition(double lon, double lat);
 
@@ -79,6 +64,21 @@ namespace SumoWCFService
 
         [OperationContract]
         string[] GetEdgesInRoute(string routeId);
+
+        [OperationContract]
+        int ChangeVehicleSpeed(string vehId, double speed, int ms);
+
+        [OperationContract]
+        int ChangeVehicleMaxSpeed(string vehId, double maxSpeed);
+
+        [OperationContract]
+        int ResumeVehicleBehaviour(string vehId);
+
+        [OperationContract]
+        int AddNewVehicle(string vehId, string type, string routeId, int departTime, double departPosition, double departSpeed, byte departLane);
+
+        [OperationContract]
+        int AddStopInVehicle(string vehId, string edgeId, double position, byte laneIndex, int durationInMs);
     }
 
     /// <summary>
@@ -95,7 +95,12 @@ namespace SumoWCFService
         [DataMember]
         public List<VehicleTDB> vehicles { get; set; }
 
-        private float time;
+        /// <summary>
+        /// Timestep value.
+        /// </summary>
+        [DataMember]
+        public float time;
+
         private int index;
 
         /// <summary>

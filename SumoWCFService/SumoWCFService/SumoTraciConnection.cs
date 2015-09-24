@@ -276,7 +276,7 @@ namespace SumoWCFService
         /// <returns>List of strings with all the edge ids.</returns>
         internal string[] GetEdgeList()
         {
-            string[] dummy = { "void" };
+            string[] empty = { "empty" };
 
             if (simulationStarted)
             {
@@ -284,7 +284,7 @@ namespace SumoWCFService
                 return ReadEdgesFromResponse(resp);
             }
 
-            return dummy;
+            return empty;
         }
 
         /// <summary>

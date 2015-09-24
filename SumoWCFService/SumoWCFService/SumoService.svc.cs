@@ -91,14 +91,45 @@ namespace SumoWCFService
         }
 
         /// <summary>
-        /// Gets the current timestep of the SUMO simulation.
+        /// Runs a single timestep in SUMO (1000 ms). 
         /// </summary>
-        /// <returns>Current timestep or null if the simulation is not running.</returns>
-        public TimeStepTDB GetCurrentTimeStep()
+        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
+        public int RunSingleStep()
         {
             if (isSimulationStarted)
             {
-                return trafficDB.GetCurrentTimeStep();
+                traciCom.RunSingleSimulationStep();
+                return 0;
+            }
+            else
+                return -1;
+        }
+
+        /// <summary>
+        /// Run a step of a certain elapsed time in SUMO. 
+        /// </summary>
+        /// <param name="elapsedTime">Elapsed time of the simulation step.</param>
+        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
+        public int RunElapsedTime(int elapsedTime)
+        {
+            if (isSimulationStarted)
+            {
+                traciCom.RunElapsedSimulationTime(elapsedTime);
+                return 0;
+            }
+            else
+                return -1;
+        }
+
+        /// <summary>
+        /// Gets the last timestep received from the SUMO simulation (current time step - 1).
+        /// </summary>
+        /// <returns>Last timestep or null if the simulation is not running.</returns>
+        public TimeStepTDB GetLastTimeStep()
+        {
+            if (isSimulationStarted)
+            {
+                return trafficDB.GetLastTimeStep();
             }
             else
                 return null;
@@ -135,135 +166,6 @@ namespace SumoWCFService
             if (isSimulationStarted)
             {
                 return trafficDB.GetNumberOfTimeSteps();
-            }
-            else
-                return -1;
-        }
-
-        /// <summary>
-        /// Runs a single timestep in SUMO (1000 ms). 
-        /// </summary>
-        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
-        public int RunSingleStep()
-        {
-            if (isSimulationStarted)
-            {
-                traciCom.RunSingleSimulationStep();
-                return 0;
-            }
-            else
-                return -1;
-        }
-
-        /// <summary>
-        /// Run a step of a certain elapsed time in SUMO. 
-        /// </summary>
-        /// <param name="elapsedTime">Elapsed time of the simulation step.</param>
-        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
-        public int RunElapsedTime(int elapsedTime)
-        {
-            if (isSimulationStarted)
-            {
-                traciCom.RunElapsedSimulationTime(elapsedTime);
-                return 0;
-            }
-            else
-                return -1;
-        }
-
-        /// <summary>
-        /// Requests SUMO to change the speed of a certain vehicle in the current simulation. Doing
-        /// this, the vehicle will keep the same speed until its car-following behaviour is resumed.
-        /// If the speed is 0, the vehicle will stop.
-        /// </summary>
-        /// <param name="vehId">String containing the vehicle id.</param>
-        /// <param name="speed">New speed for the vehicle.</param>
-        /// <param name="ms">Milliseconds to reach the new speed.</param>
-        /// <seealso cref="ResumeVehicleBehaviour"/>
-        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
-        public int ChangeVehicleSpeed(string vehId, double speed, int ms)
-        {
-            if (isSimulationStarted)
-            {
-                traciCom.ChangeVehicleSpeed(vehId, speed, ms);
-                return 0;
-            }
-            else
-                return -1;
-        }
-
-        /// <summary>
-        /// Requests SUMO to change the max speed of a certain vehicle in the current simulation.
-        /// </summary>
-        /// <param name="vehId">String containing the vehicle id.</param>
-        /// <param name="maxSpeed">New max speed for the vehicle.</param>
-        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
-        public int ChangeVehicleMaxSpeed(string vehId, double maxSpeed)
-        {
-            if (isSimulationStarted)
-            {
-                traciCom.ChangeVehicleMaxSpeed(vehId, maxSpeed);
-                return 0;
-            }
-            else
-                return -1;
-        }
-
-        /// <summary>
-        /// Requests SUMO to resume the car-following behaviour of a certain vehicle in the current
-        /// simulation.
-        /// </summary>
-        /// <param name="vehId">String containing the vehicle id.</param>
-        /// <seealso cref="ChangeVehicleSpeed"/>
-        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
-        public int ResumeVehicleBehaviour(string vehId)
-        {
-            if (isSimulationStarted)
-            {
-                traciCom.ResumeVehicleBehaviour(vehId);
-                return 0;
-            }
-            else
-                return -1;
-        }
-
-        /// <summary>
-        /// Requests SUMO to add a new vehicle in the simulation.
-        /// </summary>
-        /// <param name="vehId">String containing the vehicle id.</param>
-        /// <param name="type">String containing the type of the vehicle.</param>
-        /// <param name="routeId">String containing the route id of the vehicle.</param>
-        /// <param name="departTime">Specify at which timestep of the simulation the vehicle should depart.</param>
-        /// <param name="departPosition">Specify the position from which the vehicle should depart.</param>
-        /// <param name="departSpeed">Specify the initial speed of the vehicle.</param>
-        /// <param name="departLane">Specify the lane where the vehicle should start.</param>
-        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
-        public int AddNewVehicle(string vehId, string type, string routeId, int departTime, double departPosition, double departSpeed, byte departLane)
-        {
-            if (isSimulationStarted)
-            {
-                traciCom.AddNewVehicle(vehId, type, routeId, departTime, departPosition, departSpeed, departLane);
-                return 0;
-            }
-            else
-                return -1;
-        }
-
-        /// <summary>
-        /// Requests SUMO to add a stop in an existing vehicle of the simulation.
-        /// </summary>
-        /// <param name="vehId">String containing the vehicle id.</param>
-        /// <param name="edgeId">String containing the edge where the vehicle should stop.</param>
-        /// <param name="position">Position in the edge where the vehicle should stop.</param>
-        /// <param name="laneIndex">Index of the lane.</param>
-        /// <param name="durationInMs">Number of milliseconds the vehicle will stop before continuing its trip.</param>
-        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
-        public int AddStopInVehicle(string vehId, string edgeId, double position, byte laneIndex, int durationInMs)
-        {
-            if (isSimulationStarted)
-            {
-                traciCom.AddStopInVehicle(vehId, edgeId, position, laneIndex, durationInMs);
-                return 0;
             }
             else
                 return -1;
@@ -417,6 +319,104 @@ namespace SumoWCFService
             }
             else
                 return null;
+        }
+
+        /// <summary>
+        /// Requests SUMO to change the speed of a certain vehicle in the current simulation. Doing
+        /// this, the vehicle will keep the same speed until its car-following behaviour is resumed.
+        /// If the speed is 0, the vehicle will stop.
+        /// </summary>
+        /// <param name="vehId">String containing the vehicle id.</param>
+        /// <param name="speed">New speed for the vehicle.</param>
+        /// <param name="ms">Milliseconds to reach the new speed.</param>
+        /// <seealso cref="ResumeVehicleBehaviour"/>
+        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
+        public int ChangeVehicleSpeed(string vehId, double speed, int ms)
+        {
+            if (isSimulationStarted)
+            {
+                traciCom.ChangeVehicleSpeed(vehId, speed, ms);
+                return 0;
+            }
+            else
+                return -1;
+        }
+
+        /// <summary>
+        /// Requests SUMO to change the max speed of a certain vehicle in the current simulation.
+        /// </summary>
+        /// <param name="vehId">String containing the vehicle id.</param>
+        /// <param name="maxSpeed">New max speed for the vehicle.</param>
+        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
+        public int ChangeVehicleMaxSpeed(string vehId, double maxSpeed)
+        {
+            if (isSimulationStarted)
+            {
+                traciCom.ChangeVehicleMaxSpeed(vehId, maxSpeed);
+                return 0;
+            }
+            else
+                return -1;
+        }
+
+        /// <summary>
+        /// Requests SUMO to resume the car-following behaviour of a certain vehicle in the current
+        /// simulation.
+        /// </summary>
+        /// <param name="vehId">String containing the vehicle id.</param>
+        /// <seealso cref="ChangeVehicleSpeed"/>
+        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
+        public int ResumeVehicleBehaviour(string vehId)
+        {
+            if (isSimulationStarted)
+            {
+                traciCom.ResumeVehicleBehaviour(vehId);
+                return 0;
+            }
+            else
+                return -1;
+        }
+
+        /// <summary>
+        /// Requests SUMO to add a new vehicle in the simulation.
+        /// </summary>
+        /// <param name="vehId">String containing the vehicle id.</param>
+        /// <param name="type">String containing the type of the vehicle.</param>
+        /// <param name="routeId">String containing the route id of the vehicle.</param>
+        /// <param name="departTime">Specify at which timestep of the simulation the vehicle should depart.</param>
+        /// <param name="departPosition">Specify the position from which the vehicle should depart.</param>
+        /// <param name="departSpeed">Specify the initial speed of the vehicle.</param>
+        /// <param name="departLane">Specify the lane where the vehicle should start.</param>
+        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
+        public int AddNewVehicle(string vehId, string type, string routeId, int departTime, double departPosition, double departSpeed, byte departLane)
+        {
+            if (isSimulationStarted)
+            {
+                traciCom.AddNewVehicle(vehId, type, routeId, departTime, departPosition, departSpeed, departLane);
+                return 0;
+            }
+            else
+                return -1;
+        }
+
+        /// <summary>
+        /// Requests SUMO to add a stop in an existing vehicle of the simulation.
+        /// </summary>
+        /// <param name="vehId">String containing the vehicle id.</param>
+        /// <param name="edgeId">String containing the edge where the vehicle should stop.</param>
+        /// <param name="position">Position in the edge where the vehicle should stop.</param>
+        /// <param name="laneIndex">Index of the lane.</param>
+        /// <param name="durationInMs">Number of milliseconds the vehicle will stop before continuing its trip.</param>
+        /// <returns>0 if operation succeeded, -1 if the simulation is not running.</returns>
+        public int AddStopInVehicle(string vehId, string edgeId, double position, byte laneIndex, int durationInMs)
+        {
+            if (isSimulationStarted)
+            {
+                traciCom.AddStopInVehicle(vehId, edgeId, position, laneIndex, durationInMs);
+                return 0;
+            }
+            else
+                return -1;
         }
     }
 }

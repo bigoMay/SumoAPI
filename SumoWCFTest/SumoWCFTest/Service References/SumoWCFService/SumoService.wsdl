@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="SumoService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/SumoWCFService" />
+      <xsd:import schemaLocation="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ISumoService_InitializeSimulation_InputMessage">
+    <wsdl:part name="parameters" element="tns:InitializeSimulation" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_InitializeSimulation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InitializeSimulationResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_EndSimulation_InputMessage">
+    <wsdl:part name="parameters" element="tns:EndSimulation" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_EndSimulation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EndSimulationResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_RestartSimulation_InputMessage">
+    <wsdl:part name="parameters" element="tns:RestartSimulation" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_RestartSimulation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RestartSimulationResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_RunSingleStep_InputMessage">
+    <wsdl:part name="parameters" element="tns:RunSingleStep" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_RunSingleStep_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RunSingleStepResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_RunElapsedTime_InputMessage">
+    <wsdl:part name="parameters" element="tns:RunElapsedTime" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_RunElapsedTime_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RunElapsedTimeResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetLastTimeStep_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLastTimeStep" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetLastTimeStep_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLastTimeStepResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetTimeStep_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeStep" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetTimeStep_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTimeStepResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetNumberOfTimeSteps_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNumberOfTimeSteps" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetNumberOfTimeSteps_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNumberOfTimeStepsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_LonLatTo2DPosition_InputMessage">
+    <wsdl:part name="parameters" element="tns:LonLatTo2DPosition" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_LonLatTo2DPosition_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LonLatTo2DPositionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetEdgeList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetEdgeList" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetEdgeList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetEdgeListResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeLength_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeLength" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeLength_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeLengthResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeWidth_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeWidth" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeWidth_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeWidthResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeMaxAccel_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeMaxAccel" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeMaxAccel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeMaxAccelResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeMaxSpeed_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeMaxSpeed" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeMaxSpeed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeMaxSpeedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeMaxDecel_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeMaxDecel" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleTypeMaxDecel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleTypeMaxDecelResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleRouteId_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleRouteId" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleRouteId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleRouteIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleLaneIndex_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleLaneIndex" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetVehicleLaneIndex_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVehicleLaneIndexResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetEdgesInRoute_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetEdgesInRoute" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_GetEdgesInRoute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetEdgesInRouteResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_ChangeVehicleSpeed_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVehicleSpeed" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_ChangeVehicleSpeed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVehicleSpeedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_ChangeVehicleMaxSpeed_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVehicleMaxSpeed" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_ChangeVehicleMaxSpeed_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVehicleMaxSpeedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_ResumeVehicleBehaviour_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResumeVehicleBehaviour" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_ResumeVehicleBehaviour_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResumeVehicleBehaviourResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_AddNewVehicle_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddNewVehicle" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_AddNewVehicle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddNewVehicleResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_AddStopInVehicle_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddStopInVehicle" />
+  </wsdl:message>
+  <wsdl:message name="ISumoService_AddStopInVehicle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddStopInVehicleResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ISumoService">
+    <wsdl:operation name="InitializeSimulation">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/InitializeSimulation" message="tns:ISumoService_InitializeSimulation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/InitializeSimulationResponse" message="tns:ISumoService_InitializeSimulation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EndSimulation">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/EndSimulation" message="tns:ISumoService_EndSimulation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/EndSimulationResponse" message="tns:ISumoService_EndSimulation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RestartSimulation">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/RestartSimulation" message="tns:ISumoService_RestartSimulation_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/RestartSimulationResponse" message="tns:ISumoService_RestartSimulation_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RunSingleStep">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/RunSingleStep" message="tns:ISumoService_RunSingleStep_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/RunSingleStepResponse" message="tns:ISumoService_RunSingleStep_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RunElapsedTime">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/RunElapsedTime" message="tns:ISumoService_RunElapsedTime_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/RunElapsedTimeResponse" message="tns:ISumoService_RunElapsedTime_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLastTimeStep">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetLastTimeStep" message="tns:ISumoService_GetLastTimeStep_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetLastTimeStepResponse" message="tns:ISumoService_GetLastTimeStep_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTimeStep">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetTimeStep" message="tns:ISumoService_GetTimeStep_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetTimeStepResponse" message="tns:ISumoService_GetTimeStep_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfTimeSteps">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetNumberOfTimeSteps" message="tns:ISumoService_GetNumberOfTimeSteps_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetNumberOfTimeStepsResponse" message="tns:ISumoService_GetNumberOfTimeSteps_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="LonLatTo2DPosition">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/LonLatTo2DPosition" message="tns:ISumoService_LonLatTo2DPosition_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/LonLatTo2DPositionResponse" message="tns:ISumoService_LonLatTo2DPosition_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetEdgeList">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetEdgeList" message="tns:ISumoService_GetEdgeList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetEdgeListResponse" message="tns:ISumoService_GetEdgeList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeLength">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeLength" message="tns:ISumoService_GetVehicleTypeLength_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeLengthResponse" message="tns:ISumoService_GetVehicleTypeLength_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeWidth">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeWidth" message="tns:ISumoService_GetVehicleTypeWidth_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeWidthResponse" message="tns:ISumoService_GetVehicleTypeWidth_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeMaxAccel">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeMaxAccel" message="tns:ISumoService_GetVehicleTypeMaxAccel_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeMaxAccelResponse" message="tns:ISumoService_GetVehicleTypeMaxAccel_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeMaxSpeed">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeMaxSpeed" message="tns:ISumoService_GetVehicleTypeMaxSpeed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeMaxSpeedResponse" message="tns:ISumoService_GetVehicleTypeMaxSpeed_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeMaxDecel">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeMaxDecel" message="tns:ISumoService_GetVehicleTypeMaxDecel_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetVehicleTypeMaxDecelResponse" message="tns:ISumoService_GetVehicleTypeMaxDecel_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleRouteId">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetVehicleRouteId" message="tns:ISumoService_GetVehicleRouteId_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetVehicleRouteIdResponse" message="tns:ISumoService_GetVehicleRouteId_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleLaneIndex">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetVehicleLaneIndex" message="tns:ISumoService_GetVehicleLaneIndex_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetVehicleLaneIndexResponse" message="tns:ISumoService_GetVehicleLaneIndex_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetEdgesInRoute">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/GetEdgesInRoute" message="tns:ISumoService_GetEdgesInRoute_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/GetEdgesInRouteResponse" message="tns:ISumoService_GetEdgesInRoute_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVehicleSpeed">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/ChangeVehicleSpeed" message="tns:ISumoService_ChangeVehicleSpeed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/ChangeVehicleSpeedResponse" message="tns:ISumoService_ChangeVehicleSpeed_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVehicleMaxSpeed">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/ChangeVehicleMaxSpeed" message="tns:ISumoService_ChangeVehicleMaxSpeed_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/ChangeVehicleMaxSpeedResponse" message="tns:ISumoService_ChangeVehicleMaxSpeed_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ResumeVehicleBehaviour">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/ResumeVehicleBehaviour" message="tns:ISumoService_ResumeVehicleBehaviour_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/ResumeVehicleBehaviourResponse" message="tns:ISumoService_ResumeVehicleBehaviour_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddNewVehicle">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/AddNewVehicle" message="tns:ISumoService_AddNewVehicle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/AddNewVehicleResponse" message="tns:ISumoService_AddNewVehicle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddStopInVehicle">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISumoService/AddStopInVehicle" message="tns:ISumoService_AddStopInVehicle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISumoService/AddStopInVehicleResponse" message="tns:ISumoService_AddStopInVehicle_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_ISumoService" type="tns:ISumoService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="InitializeSimulation">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/InitializeSimulation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EndSimulation">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/EndSimulation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RestartSimulation">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/RestartSimulation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RunSingleStep">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/RunSingleStep" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RunElapsedTime">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/RunElapsedTime" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLastTimeStep">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetLastTimeStep" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTimeStep">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetTimeStep" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfTimeSteps">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetNumberOfTimeSteps" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LonLatTo2DPosition">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/LonLatTo2DPosition" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetEdgeList">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetEdgeList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeLength">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetVehicleTypeLength" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeWidth">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetVehicleTypeWidth" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeMaxAccel">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetVehicleTypeMaxAccel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeMaxSpeed">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetVehicleTypeMaxSpeed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleTypeMaxDecel">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetVehicleTypeMaxDecel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleRouteId">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetVehicleRouteId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVehicleLaneIndex">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetVehicleLaneIndex" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetEdgesInRoute">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/GetEdgesInRoute" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVehicleSpeed">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/ChangeVehicleSpeed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVehicleMaxSpeed">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/ChangeVehicleMaxSpeed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResumeVehicleBehaviour">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/ResumeVehicleBehaviour" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddNewVehicle">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/AddNewVehicle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddStopInVehicle">
+      <soap:operation soapAction="http://tempuri.org/ISumoService/AddStopInVehicle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SumoService">
+    <wsdl:port name="BasicHttpBinding_ISumoService" binding="tns:BasicHttpBinding_ISumoService">
+      <soap:address location="http://admgaming-pc/SumoWCFService/SumoService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

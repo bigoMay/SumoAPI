@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="d6ff7bb3-3cf2-4502-9be1-3a6f43445b97" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://192.168.1.113/SumoWCFService/SumoService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="SumoService.disco" MetadataType="Disco" ID="a6355b43-84f9-4289-9c1a-61ed5997a7c5" SourceId="1" SourceUrl="http://admgaming-pc/SumoWCFService/SumoService.svc?disco" />
+    <MetadataFile FileName="SumoService.xsd" MetadataType="Schema" ID="97553bc8-7fdd-46a9-b915-ebaccd95867c" SourceId="1" SourceUrl="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd3" />
+    <MetadataFile FileName="SumoService1.xsd" MetadataType="Schema" ID="5eef7500-90e5-40f2-ba85-22192d3d5ba0" SourceId="1" SourceUrl="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd0" />
+    <MetadataFile FileName="SumoService2.xsd" MetadataType="Schema" ID="70f42f79-67ce-4500-85bf-0e6cf9fab158" SourceId="1" SourceUrl="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd1" />
+    <MetadataFile FileName="SumoService3.xsd" MetadataType="Schema" ID="b88a7e9d-790f-460a-b48f-2a5b56504c20" SourceId="1" SourceUrl="http://admgaming-pc/SumoWCFService/SumoService.svc?xsd=xsd2" />
+    <MetadataFile FileName="SumoService.wsdl" MetadataType="Wsdl" ID="0760aa14-6753-47b4-beb2-4645c10c8b48" SourceId="1" SourceUrl="http://admgaming-pc/SumoWCFService/SumoService.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
